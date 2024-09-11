@@ -2,7 +2,8 @@ from datetime import datetime, timedelta, timezone
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.orm import validates
-from sqlalchemy import UniqueConstraint
+from enum import Enum
+from sqlalchemy import UniqueConstraint, Enum as SqlEnum
 import re
 
 # association table for many to many relationship with User and PowerUp
@@ -54,17 +55,21 @@ class User(db.Model):
     def __repr__(self):
         return f'<User {self.username}>'
 
-class Challenge(db.Model):
-    # challenge model: represents a game challenge created by a user
-    id = db.Column(db.Integer, primary_key=True)
-    creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # should link to the user who created the challenge
-    theme = db.Column(db.String(64))
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc)) # when the challenge was created (utc.now is deprecated*)
-    expires_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc) + timedelta(days=7)) # lambda function to set expiration one week in the future
+class DifficultyEnum(Enum):
+    EASY = 'easy'
+    MEDIUM = 'medium'
+    HARD = 'hard'
 
-    # relationships
-    responses = db.relationship('ChallengeResponse', backref='challenge', lazy=True)  # responses to this challenge
-    questions = db.relationship('ChallengeQuestion', backref='challenge', lazy=True)  # the questions associated with thischallenge
+class Challenge(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    theme = db.Column(db.String(64))
+    difficulty = db.Column(SqlEnum(DifficultyEnum), nullable=False)  # use enumeration for difficulty
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
+    expires_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc) + timedelta(days=7))
+
+    responses = db.relationship('ChallengeResponse', backref='challenge', lazy=True)
+    questions = db.relationship('ChallengeQuestion', backref='challenge', lazy=True)
 
     def __repr__(self):
         return f'<Challenge {self.id} by User {self.creator_id}>'
