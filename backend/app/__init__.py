@@ -18,7 +18,7 @@ def create_app(config_class=Config):
     jwt.init_app(app)
 
     from .routes import auth #,game
-    app.register_blueprint(auth.bp)
+    app.register_blueprint(auth.bp, url_prefix='/auth')
     # app.register_blueprint(game.bp)
 
 
