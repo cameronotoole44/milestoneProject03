@@ -23,7 +23,39 @@ def register():
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({"msg": "User registered successfully"}), 201
+    # generates token for auto login- just easier for the user
+    access_token = create_access_token(identity=username)
+
+    return jsonify({
+        "msg": "User registered successfully",
+        "user": {"id": new_user.id, "username": new_user.username},
+        "access_token": access_token
+    }), 201
+# better input validation for username/password maybe?
+# def register():
+#     data = request.get_json()
+#     username = data.get('username')
+#     password = data.get('password')
+
+#     if not username or not password:
+#         return jsonify({"msg": "Missing username or password"}), 400
+
+#     if len(username) < 3 or len(username) > 20:
+#         return jsonify({"msg": "Username must be between 3 and 20 characters"}), 400
+
+#     if len(password) < 8:
+#         return jsonify({"msg": "Password must be at least 8 characters long"}), 400
+
+#     if User.query.filter_by(username=username).first():
+#         return jsonify({"msg": "Username already exists"}), 400
+
+#     new_user = User(username=username)
+#     new_user.set_password(password)
+
+#     db.session.add(new_user)
+#     db.session.commit()
+
+#     return jsonify({"msg": "User registered successfully"}), 201
 
 @bp.route('/login', methods=['POST'])
 def login():
