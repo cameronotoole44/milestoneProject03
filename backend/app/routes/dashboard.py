@@ -21,10 +21,23 @@ def dashboard():
         "games_played": user.games_played,
         "total_score": user.total_score,
         "highest_score": user.highest_score,
-        "challenges_created": [challenge.id for challenge in created_challenges],
-        "challenges_completed": [response.id for response in completed_challenges]
+      
     }
 
     return jsonify(response), 200
 
 
+@bp.route('/leaderboard/global', methods=['GET'])
+def global_leaderboard():
+    top_users = User.query.order_by(User.total_score.desc()).limit(10).all()
+    leaderboard_data = []
+
+    for rank, user in enumerate(top_users, start=1):
+        leaderboard_data.append({
+            "rank": rank,
+            "username": user.username,
+            "total_score": user.total_score,
+            "highest_score": user.highest_score
+        })
+
+    return jsonify(leaderboard_data), 200
