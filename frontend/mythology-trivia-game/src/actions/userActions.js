@@ -40,6 +40,16 @@ export const loginUser = (credentials) => async (dispatch) => {
     }
 };
 
+
+export const setCurrentUser = (userData) => (dispatch) => {
+    dispatch({
+        type: USER_LOGIN_SUCCESS,
+        payload: userData
+    });
+
+    localStorage.setItem('currentUser', JSON.stringify(userData));
+};
+
 export const logoutUser = () => (dispatch) => {
     localStorage.removeItem('currentUser');
     dispatch({ type: USER_LOGOUT });

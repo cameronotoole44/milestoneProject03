@@ -24,7 +24,7 @@ const Login = () => {
     }, [currentUser, navigate]);
 
     return (
-        <div className="login container">
+        <div className="login-container">
             <div className="login-box">
                 <div className="login-content">
                     <form onSubmit={handleSubmit} className="login-form">
@@ -52,6 +52,12 @@ const Login = () => {
                     </form>
                     <button onClick={() => navigate('/')} className="home-button">
                         Home
+                    </button>
+                    <button
+                        type="submit"
+                        className="register-button"
+                    >
+                        Register
                     </button>
                     {error && <p className="error-message">{error}</p>}
                 </div>
