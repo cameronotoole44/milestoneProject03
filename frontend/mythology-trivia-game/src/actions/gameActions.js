@@ -1,4 +1,3 @@
-// fetch questions based on themes
 export const fetchQuestions = (theme) => async (dispatch) => {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     const token = currentUser?.access_token;
@@ -19,7 +18,7 @@ export const fetchQuestions = (theme) => async (dispatch) => {
     }
 };
 
-// shuffle them needed?
+
 export const setCurrentQuestionIndex = (index) => (dispatch) => {
     dispatch({ type: 'SET_CURRENT_QUESTION_INDEX', payload: index });
 };

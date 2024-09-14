@@ -6,11 +6,12 @@ from enum import Enum
 from sqlalchemy import UniqueConstraint, Enum as SqlEnum
 import re
 
-# association table for many to many relationship with User and PowerUp
-user_powerups = db.Table('user_powerups',
+# association table
+user_powerup = db.Table('user_powerup',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
     db.Column('powerup_id', db.Integer, db.ForeignKey('powerup.id'), primary_key=True)
 )
+
 
 class User(db.Model):
     # user model: stores user details and stats
@@ -24,7 +25,10 @@ class User(db.Model):
     total_score = db.Column(db.Integer, default=0)
     highest_score = db.Column(db.Integer, default=0)
     
-    # usernames are unique
+    # many-to-many relationship*
+    powerups = db.relationship('PowerUp', secondary=user_powerup,
+                               backref=db.backref('users', lazy='dynamic'))
+
     __table_args__ = (UniqueConstraint('username', name='_username_uc'),)
 
     @validates('username')
@@ -37,7 +41,7 @@ class User(db.Model):
         # username contains only allowed characters
         if not re.match('^[A-Za-z0-9_-]+$', username):
             raise ValueError("Username can only include letters, numbers, underscores, and hyphens.")
-        # username exist in the data base?
+        # username exists in the database?
         if User.query.filter(User.username.ilike(username)).first():
             raise ValueError("Username already taken.")
         return username.lower()  # store usernames in lowercase for consistency
@@ -54,7 +58,7 @@ class User(db.Model):
 class DifficultyEnum(Enum):
     EASY = 'easy'
     MEDIUM = 'medium'
-    HARD = 'hard'
+    HARD = 'hard' # add this!*
 
 class PowerUp(db.Model):
     __tablename__ = 'powerup'
