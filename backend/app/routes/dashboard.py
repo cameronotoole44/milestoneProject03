@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from ..models import User, Challenge, ChallengeResponse
+from ..models import User
 
 bp = Blueprint('dashboard', __name__)
 
@@ -12,9 +12,6 @@ def dashboard():
 
     if not user:
         return jsonify({"msg": "User not found"}), 404
-
-    created_challenges = Challenge.query.filter_by(creator_id=user.id).all()
-    completed_challenges = ChallengeResponse.query.filter_by(user_id=user.id).all()
 
     response = {
         "username": user.username,
