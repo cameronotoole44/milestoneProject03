@@ -1,7 +1,7 @@
 from app import create_app, db
 from app.models import Question
 
-app = create_app()
+app = create_app() # setting up the app context to interact with db
 
 # BULK INSERT TIME 
 def norse_questions():
