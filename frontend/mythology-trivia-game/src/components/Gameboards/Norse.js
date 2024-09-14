@@ -15,7 +15,7 @@ function NorseGame() {
             {questions.map((question, index) => (
                 <div key={index}>
                     <h2>{question.question_text}</h2>
-                    {/* Render answer options */}
+
                 </div>
             ))}
         </div>
