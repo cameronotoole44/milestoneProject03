@@ -54,6 +54,19 @@ module.exports = {
           darkBackground: '#181D27',
         },
       },
+      spacing: {
+        '128': '32rem',
+        '144': '36rem',
+      },
+      borderRadius: {
+        '4xl': '2rem',
+      },
+      fontSize: {
+        'xxs': '.65rem',
+      },
+      screens: {
+        '3xl': '1600px',
+      },
     },
   },
   plugins: [],
