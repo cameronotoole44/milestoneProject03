@@ -18,6 +18,33 @@ export const fetchQuestions = (theme) => async (dispatch) => {
     }
 };
 
+export const updatePlayerStats = (score) => async (dispatch, getState) => {
+    try {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        const token = currentUser?.access_token;
+        const response = await fetch('http://localhost:5000/auth/update_stats', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ score })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            dispatch({
+                type: 'UPDATE_PLAYER_STATS',
+                payload: data
+            });
+        } else {
+            console.error(data.message);
+        }
+    } catch (error) {
+        console.error('Error updating player stats:', error);
+    }
+};
+
 
 export const setCurrentQuestionIndex = (index) => (dispatch) => {
     dispatch({ type: 'SET_CURRENT_QUESTION_INDEX', payload: index });

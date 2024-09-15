@@ -13,7 +13,8 @@ export const SET_GAME_STATE = 'SET_GAME_STATE';
 export const SET_COUNTDOWN = 'SET_COUNTDOWN';
 export const SET_POWER_UPS = 'SET_POWER_UPS';
 export const SET_ACTIVE_POWER_UP = 'SET_ACTIVE_POWER_UP';
-
+export const END_GAME = 'END_GAME';
+export const UPDATE_PLAYER_STATS = 'UPDATE_PLAYER_STATS';
 
 
 

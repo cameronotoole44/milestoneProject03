@@ -6,7 +6,9 @@ import {
     SET_GAME_STATE,
     SET_COUNTDOWN,
     SET_POWER_UPS,
-    SET_ACTIVE_POWER_UP
+    SET_ACTIVE_POWER_UP,
+    END_GAME,
+    UPDATE_PLAYER_STATS
 } from '../../actions/actionTypes';
 
 const initialState = {
@@ -38,6 +40,10 @@ const gameReducer = (state = initialState, action) => {
             return { ...state, powerUps: action.payload };
         case SET_ACTIVE_POWER_UP:
             return { ...state, activePowerUp: action.payload };
+        case END_GAME:
+            return { ...state, endGame: action.payload };
+        case UPDATE_PLAYER_STATS:
+            return { ...state, playerStats: action.payload };
         default:
             return state;
     }
