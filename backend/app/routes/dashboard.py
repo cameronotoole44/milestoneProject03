@@ -40,7 +40,6 @@ def get_leaderboard():
         print(f"Error: {e}")
         return jsonify({"error": "An error occurred"}), 500
 
-# get a random theme
 @bp.route('/random-theme', methods=['GET'])
 @jwt_required()
 def get_random_theme():
@@ -60,19 +59,21 @@ def get_random_theme():
         print(f"Error: {e}")
         return jsonify({"error": "An error occurred"}), 500
 
-
-
 @bp.route('/daily-challenge', methods=['GET'])
 @jwt_required()
 def get_daily_challenge():
+    # user_id = get_jwt_identity()
+    # user = User.query.get(user_id)
+    
+    # if user.daily_challenge_completed:
+    #     return jsonify({"message": "Daily challenge already completed for today"}), 403
+
     theme = request.args.get('theme')
     
     if not theme:
         return jsonify({"error": "Theme parameter is required"}), 400
     
     try:
-        # print(f"Fetching daily challenge for theme: {theme}")  # debugging
-        
         question = db.session.query(Question).filter_by(theme=theme).order_by(db.func.random()).first()
         
         if not question:
@@ -89,7 +90,20 @@ def get_daily_challenge():
             ],
             "correct_answer": question.correct_answer
         }
-        
         return jsonify(question_data), 200
     except Exception as e:
         return jsonify({"error": "An error occurred"}), 500
+
+# @bp.route('/submit-daily-challenge', methods=['POST'])
+# @jwt_required()
+# def submit_daily_challenge():
+#     user_id = get_jwt_identity()
+#     user = User.query.get(user_id)
+
+#     if not user:
+#         return jsonify({"error": "User not found"}), 404
+
+#     user.daily_challenge_completed = True
+#     db.session.commit()
+
+#     return jsonify({"message": "Daily challenge status updated"}), 200
