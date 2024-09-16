@@ -21,7 +21,7 @@ class User(db.Model):
     games_played = db.Column(db.Integer, default=0)
     total_score = db.Column(db.Integer, default=0)
     highest_score = db.Column(db.Integer, default=0)
-    
+    daily_challenge_completed = db.Column(db.Boolean, default=False)
     # many-to-many relationship
     powerups = db.relationship('PowerUp', secondary=user_powerup,
                                backref=db.backref('users', lazy='dynamic'))
