@@ -20,7 +20,7 @@ function Gameboard() {
                     Japanese Mythology
                 </Link>
                 <Link to="./Chinese" className="link chinese">
-                    Chinese Mythology
+                    Chinese Mythology(Coming Soon!)
                 </Link>
                 <Link to="./Egyptian" className="link egyptian">
                     Egyptian Mythology
