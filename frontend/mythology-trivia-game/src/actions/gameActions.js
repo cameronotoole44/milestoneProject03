@@ -1,3 +1,61 @@
+import {
+    FETCH_DAILY_CHALLENGE_REQUEST,
+    FETCH_DAILY_CHALLENGE_SUCCESS,
+    FETCH_DAILY_CHALLENGE_FAILURE,
+    SUBMIT_DAILY_CHALLENGE_SUCCESS,
+    SUBMIT_DAILY_CHALLENGE_FAILURE,
+} from './actionTypes';
+
+export const fetchDailyChallenge = () => async (dispatch) => {
+    dispatch({ type: FETCH_DAILY_CHALLENGE_REQUEST });
+
+    try {
+        const response = await fetch('http://localhost:5000/daily-challenge');
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Failed to fetch daily challenge');
+        }
+
+        dispatch({
+            type: FETCH_DAILY_CHALLENGE_SUCCESS,
+            payload: data,
+        });
+    } catch (error) {
+        dispatch({
+            type: FETCH_DAILY_CHALLENGE_FAILURE,
+            payload: error.message,
+        });
+    }
+};
+
+
+export const submitDailyChallengeAnswer = (questionId, answer) => async (dispatch) => {
+    try {
+        const response = await fetch(`http://localhost:5000/daily-challenge/${questionId}/submit`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ answer }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to submit answer');
+        }
+
+        dispatch({
+            type: SUBMIT_DAILY_CHALLENGE_SUCCESS,
+        });
+    } catch (error) {
+        dispatch({
+            type: SUBMIT_DAILY_CHALLENGE_FAILURE,
+            payload: error.message,
+        });
+    }
+};
+
 export const fetchQuestions = (theme) => async (dispatch) => {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     const token = currentUser?.access_token;
@@ -18,10 +76,12 @@ export const fetchQuestions = (theme) => async (dispatch) => {
     }
 };
 
-export const updatePlayerStats = (score) => async (dispatch, getState) => {
+// player stats
+export const updatePlayerStats = (score) => async (dispatch) => {
     try {
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         const token = currentUser?.access_token;
+
         const response = await fetch('http://localhost:5000/auth/update_stats', {
             method: 'POST',
             headers: {
@@ -45,7 +105,7 @@ export const updatePlayerStats = (score) => async (dispatch, getState) => {
     }
 };
 
-
+// action handlers 
 export const setCurrentQuestionIndex = (index) => (dispatch) => {
     dispatch({ type: 'SET_CURRENT_QUESTION_INDEX', payload: index });
 };
