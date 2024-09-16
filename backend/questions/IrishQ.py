@@ -95,13 +95,109 @@ def irish_questions():
             option_b="Lugh",
             option_c="Nuada",
             option_d="Goibniu"
+        ),
+        Question(
+            question_text="Who is the Irish goddess of sovereignty, often associated with the land of Ireland itself?",
+            correct_answer="Ériu",
+            theme="Irish",
+            option_a="Brigid",
+            option_b="Ériu",
+            option_c="Medb",
+            option_d="Flidais"
+        ),
+        Question(
+            question_text="What is the name of the magical Irish harp that could make men fall asleep, weep, or laugh?",
+            correct_answer="Dagda's Harp",
+            theme="Irish",
+            option_a="Uaithne",
+            option_b="Dagda's Harp",
+            option_c="Cláirseach",
+            option_d="Telyn"
+        ),
+        Question(
+            question_text="Who is the Irish god of youth and love?",
+            correct_answer="Aengus",
+            theme="Irish",
+            option_a="Lugh",
+            option_b="Aengus",
+            option_c="Midir",
+            option_d="Ogma"
+        ),
+        Question(
+            question_text="What mythical Irish creature is said to grant wishes in exchange for its freedom?",
+            correct_answer="Leprechaun",
+            theme="Irish",
+            option_a="Selkie",
+            option_b="Leprechaun",
+            option_c="Púca",
+            option_d="Clurichaun"
+        ),
+        Question(
+            question_text="Who is the Irish goddess of cattle and fertility?",
+            correct_answer="Boann",
+            theme="Irish",
+            option_a="Danu",
+            option_b="Boann",
+            option_c="Brigid",
+            option_d="Flidais"
+        ),
+        Question(
+            question_text="What is the name of the magical Irish weapon that never misses its target?",
+            correct_answer="Gáe Bulg",
+            theme="Irish",
+            option_a="Fragarach",
+            option_b="Gáe Bulg",
+            option_c="Caladbolg",
+            option_d="Moralltach"
+        ),
+        Question(
+            question_text="Who is the Irish god of eloquence and language?",
+            correct_answer="Ogma",
+            theme="Irish",
+            option_a="Lugh",
+            option_b="Ogma",
+            option_c="Dagda",
+            option_d="Midir"
+        ),
+        Question(
+            question_text="What is the name of the magical Irish feast where food and drink never run out?",
+            correct_answer="Feast of Goibniu",
+            theme="Irish",
+            option_a="Samhain Feast",
+            option_b="Feast of Goibniu",
+            option_c="Beltane Banquet",
+            option_d="Lughnasa Dinner"
+        ),
+        Question(
+            question_text="Who is the Irish goddess of horses and fertility?",
+            correct_answer="Macha",
+            theme="Irish",
+            option_a="Epona",
+            option_b="Macha",
+            option_c="Rhiannon",
+            option_d="Étaín"
+        ),
+        Question(
+            question_text="What is the name of the magical Irish mist that can make a small army appear large?",
+            correct_answer="Féth Fíada",
+            theme="Irish",
+            option_a="Féth Fíada",
+            option_b="Ceo Draiochta",
+            option_c="Sí Gaoithe",
+            option_d="Brat Bán"
         )
     ]
 
-    db.session.bulk_save_objects(questions)
-    db.session.commit()
+    for question_data in questions:
+        existing_question = Question.query.filter_by(question_text=question_data.question_text).first()
+        if not existing_question:
+            db.session.add(question_data)
+            print(f"Added question: {question_data.question_text}")
+        else:
+            print(f"Question already exists: {question_data.question_text}")
 
-    print("Questions have been successfully inserted!")
+    db.session.commit()
+    print("More questions have been successfully inserted!")
 
 
 if __name__ == "__main__":
