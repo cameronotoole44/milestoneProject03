@@ -9,6 +9,11 @@ import Dashboard from './components/Dashboard';
 import PrivateRoute from './components/Private';
 import Gameboard from './components/Gameboard';
 import NorseBoard from './components/Gameboards/Norse';
+import IrishBoard from './components/Gameboards/Irish';
+import GreekBoard from './components/Gameboards/Greek';
+import EgyptianBoard from './components/Gameboards/Egyptian';
+import JapaneseBoard from './components/Gameboards/Japanese';
+
 
 const App = () => {
   return (
@@ -22,6 +27,10 @@ const App = () => {
           <Route path="/profile" element={<Profile />} />
           <Route path="/gameboard" element={<Gameboard />} />
           <Route path="/gameboard/norse" element={<NorseBoard />} />
+          <Route path="/gameboard/irish" element={<IrishBoard />} />
+          <Route path="/gameboard/greek" element={<GreekBoard />} />
+          <Route path="/gameboard/egyptian" element={<EgyptianBoard />} />
+          <Route path="/gameboard/japanese" element={<JapaneseBoard />} />
         </Route>
       </Routes>
     </Router>

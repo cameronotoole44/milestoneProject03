@@ -1,6 +1,8 @@
 import React, { useEffect, useCallback } from 'react';
+import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { logoutUser } from "../../actions/userActions";
+
 import {
     fetchQuestions,
     setCurrentQuestionIndex,
@@ -27,9 +29,11 @@ function NorseGame() {
         activePowerUp,
     } = useSelector(state => state.game);
 
+
     useEffect(() => {
         dispatch(fetchQuestions('Norse'));
     }, [dispatch]);
+
 
     const handleEndGame = useCallback(() => {
         dispatch(setGameState('ended'));
@@ -64,43 +68,83 @@ function NorseGame() {
         } else if (activePowerUp === 'shield') {
             dispatch(setActivePowerUp(null));
         } else {
-            dispatch(setTimeLeft(Math.max(timeLeft - 3, 0))); // subtract 3 seconds from every wrong answer
+            dispatch(setTimeLeft(Math.max(timeLeft - 3, 0))); // subtract 3 seconds on wrong answers
         }
 
         if (currentQuestionIndex + 1 < questions.length) {
             dispatch(setCurrentQuestionIndex(currentQuestionIndex + 1));
         } else {
-            handleEndGame();
+            handleEndGame(); // in the case there are no more questions
         }
     };
 
-    // activate powerups
+    const handleGameboard = () => {
+        navigate('/gameboard');
+    };
+
+    const handleProfile = () => {
+        navigate('/profile');
+    };
+
+    const handleLogout = () => {
+        dispatch(logoutUser());
+        navigate('/login');
+    };
+
+
+    // POWER UP SECTION** //
     const activatePowerUp = (powerUp) => {
         dispatch(setActivePowerUp(powerUp.name));
         dispatch(setPowerUps(powerUps.filter(p => p.id !== powerUp.id)));
     };
 
+
     const renderQuestion = () => {
+        if (questions.length === 0) {
+            return <p>No more questions available. Please check back soon!</p>;
+        }
+
         const question = questions[currentQuestionIndex];
+        // check to make sure options is available before mapping over
+        if (!question || !question.options) {
+            return <p>Loading...</p>;
+        }
         return (
             <div className="question-container">
                 <h2>{question.question_text}</h2>
                 <div className="answer-options">
-                    {['option_a', 'option_b', 'option_c', 'option_d'].map((option, index) => (
+                    {question.options.map((optionObj, index) => (
                         <button
                             key={index}
-                            onClick={() => handleAnswer(question[option] === question.correct_answer)}
+                            onClick={() => handleAnswer(optionObj.text === question.correct_answer)}
                         >
-                            {question[option]}
+                            {optionObj.text}
                         </button>
                     ))}
                 </div>
             </div>
-        );
+        )
     };
 
-    const handleNavigate = (path) => {
-        navigate(path);
+    const renderEndGameMessage = () => {
+        return (
+            <div className="game-over">
+                <h2>Game Over!</h2>
+                <p>Final Score: {score}</p>
+                <p>You've answered all available questions. More questions coming soon!</p>
+                <div className="navigation-buttons">
+                    <button onClick={handleGameboard} className="gameboard-button">
+                        Gameboards
+                    </button>
+                    <button onClick={handleProfile} className="profile-button">
+                        Profile
+                    </button>
+                    <button onClick={handleLogout} className="logout-button">
+                        Logout
+                    </button>
+                </div>
+            </div>
+        );
     };
 
     return (
@@ -123,22 +167,9 @@ function NorseGame() {
                     </div>
                 </>
             )}
-            {gameState === 'ended' && (
-                <div className="game-over">
-                    <h2>Game Over!</h2>
-                    <p>Final Score: {score}</p>
-                    <div className="navigation-buttons">
-                        <button onClick={() => handleNavigate('/gameboard')}>
-                            Back to Gameboards
-                        </button>
-                        <button onClick={() => handleNavigate('/dashboard')}>
-                            Go to Dashboard
-                        </button>
-                    </div>
-                </div>
-            )}
+            {gameState === 'ended' && renderEndGameMessage()}
         </div>
-    );
-}
+    )
+};
 
 export default NorseGame;
