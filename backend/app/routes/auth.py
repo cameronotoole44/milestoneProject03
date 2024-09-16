@@ -96,24 +96,36 @@ def get_profile():
 @bp.route('/update_stats', methods=['POST'])
 @jwt_required()
 def update_stats():
+    print("Update stats route called")
     current_user = get_jwt_identity()
     user = User.query.filter_by(username=current_user).first()
+    print(f"User found: {user}")
 
     if not user:
         return jsonify({"msg": "User not found"}), 404
 
     data = request.get_json()
+    print(f"Received data: {data}")
 
-    # update stats after a game
-    if 'score' in data:
-        user.games_played += 1
-        user.total_score += data['score']
-        if data['score'] > user.highest_score:
-            user.highest_score = data['score']
+    try:
+        # update stats after a game
+        if 'score' in data:
+            user.games_played += 1
+            user.total_score += data['score']
+            if data['score'] > user.highest_score:
+                user.highest_score = data['score']
 
-    db.session.commit()
+        db.session.commit()
+        print("Database changes committed")
 
-    return jsonify({"msg": "Stats updated successfully"}), 200
+        updated_user = User.query.get(user.id)
+        print(f"Updated user stats: games_played={updated_user.games_played}, total_score={updated_user.total_score}, highest_score={updated_user.highest_score}")
+
+        return jsonify({"msg": "Stats updated successfully"}), 200
+    except Exception as e:
+        print(f"Error updating stats: {str(e)}")
+        db.session.rollback()
+        return jsonify({"msg": "Error updating stats"}), 500
 
 # error handlers
 @jwt.expired_token_loader
