@@ -50,16 +50,18 @@ const Login = () => {
                             {loading ? 'Loading...' : 'Login'}
                         </button>
                     </form>
-                    <button onClick={() => navigate('/')} className="home-button">
-                        Home
-                    </button>
-                    <button
-                        type="submit"
-                        className="register-button"
-                    >
-                        Register
-                    </button>
-                    {error && <p className="error-message">{error}</p>}
+                    <div className="button-bar">
+                        <button onClick={() => navigate('/')} className="home-button">
+                            Home
+                        </button>
+                        <button
+                            type="submit"
+                            className="register-button"
+                        >
+                            Register
+                        </button>
+                        {error && <p className="error-message">{error}</p>}
+                    </div>
                 </div>
             </div>
         </div>
