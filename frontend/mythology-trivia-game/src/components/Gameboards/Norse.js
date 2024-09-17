@@ -2,6 +2,7 @@ import React, { useEffect, useCallback } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import { logoutUser } from "../../actions/userActions";
+import store from '../../redux/store'
 
 import {
     fetchQuestions,
@@ -37,8 +38,9 @@ function NorseGame() {
 
     const handleEndGame = useCallback(() => {
         dispatch(setGameState('ended'));
-        dispatch(updatePlayerStats(score));
-    }, [dispatch, score]);
+        const finalScore = store.getState().game.score;
+        dispatch(updatePlayerStats(finalScore));
+    }, [dispatch]);
 
     // countdown and timer
     useEffect(() => {
@@ -57,26 +59,47 @@ function NorseGame() {
 
     // user answer
     const handleAnswer = (isCorrect) => {
+        let pointsEarned = 0;
+
         if (isCorrect) {
-            let pointsEarned = 10;
-            if (activePowerUp === 'double_points') {
+            pointsEarned = 10;
+            if (activePowerUp === 'ThorsFury') {
                 pointsEarned *= 2;
                 dispatch(setActivePowerUp(null));
             }
-            dispatch(updateScore(pointsEarned));
-            dispatch(setTimeLeft(Math.min(timeLeft + 5, 60))); // add 5 seconds on correct answers
-        } else if (activePowerUp === 'shield') {
-            dispatch(setActivePowerUp(null));
+            console.log(`Points earned this round: ${pointsEarned}`);
+            dispatch(setTimeLeft(Math.min(timeLeft + 5, 60))); // add 5 seconds for correct answers
         } else {
-            dispatch(setTimeLeft(Math.max(timeLeft - 3, 0))); // subtract 3 seconds on wrong answers
+            if (activePowerUp === 'AthenasInsight') {
+                dispatch(setActivePowerUp(null));
+            } else {
+                dispatch(setTimeLeft(Math.max(timeLeft - 3, 0))); // subtract 3 seconds for wrong answers
+            }
         }
 
-        if (currentQuestionIndex + 1 < questions.length) {
-            dispatch(setCurrentQuestionIndex(currentQuestionIndex + 1));
+        // update the score
+        dispatch(updateScore(pointsEarned));
+
+        // was it the last question?
+        if (currentQuestionIndex + 1 >= questions.length) {
+            // if it was, wait for the score to update before ending the game
+            setTimeout(() => {
+                const finalScore = store.getState().game.score;
+                dispatch(setGameState('ended'));
+                dispatch(updatePlayerStats(finalScore));
+            }, 0);
         } else {
-            handleEndGame(); // in the case there are no more questions
+            // if it wasn't, move to the next question
+            dispatch(setCurrentQuestionIndex(currentQuestionIndex + 1));
         }
     };
+
+    // use updated score from redux
+    const currentScore = useSelector((state) => state.game.score);
+
+    useEffect(() => {
+        console.log(`Updated current score: ${currentScore}`);
+    }, [currentScore]);
 
     const handleGameboard = () => {
         navigate('/gameboard');
@@ -110,9 +133,9 @@ function NorseGame() {
             return <p>Loading...</p>;
         }
         return (
-            <div className="question-container">
+            <div className="norse-question-container">
                 <h2>{question.question_text}</h2>
-                <div className="answer-options">
+                <div className="norse-answer-options">
                     {question.options.map((optionObj, index) => (
                         <button
                             key={index}
@@ -128,11 +151,11 @@ function NorseGame() {
 
     const renderEndGameMessage = () => {
         return (
-            <div className="game-over">
+            <div className="norse-game-over">
                 <h2>Game Over!</h2>
                 <p>Final Score: {score}</p>
-                <p>You've answered all available questions. More questions coming soon!</p>
-                <div className="navigation-buttons">
+                <p>More questions coming soon!</p>
+                <div className="button-bar">
                     <button onClick={handleGameboard} className="gameboard-button">
                         Gameboards
                     </button>
@@ -148,17 +171,17 @@ function NorseGame() {
     };
 
     return (
-        <div className="game-container">
+        <div className="norse-game-container">
             <h1>Norse Mythology</h1>
-            {gameState === 'countdown' && <div className="countdown">{countdown}</div>}
+            {gameState === 'countdown' && <div className="norse-countdown">{countdown}</div>}
             {gameState === 'playing' && (
                 <>
-                    <div className="game-stats">
+                    <div className="norse-game-stats">
                         <span>Score: {score}</span>
                         <span>Time left: {timeLeft}s</span>
                     </div>
                     {questions.length > 0 ? renderQuestion() : <p>Loading questions...</p>}
-                    <div className="power-ups">
+                    <div className="norse-power-ups">
                         {powerUps.map(powerUp => (
                             <button key={powerUp.id} onClick={() => activatePowerUp(powerUp)}>
                                 {powerUp.name}
