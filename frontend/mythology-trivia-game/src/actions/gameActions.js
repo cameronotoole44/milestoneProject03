@@ -70,9 +70,12 @@ export const fetchQuestions = (theme) => async (dispatch) => {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await response.json();
+        if (!response.ok) throw new Error('Failed to fetch questions');
+
         dispatch({ type: 'SET_QUESTIONS', payload: data });
     } catch (error) {
         console.error('Error fetching questions:', error);
+        // Handle error action here if necessary
     }
 };
 
@@ -81,6 +84,7 @@ export const updatePlayerStats = (score) => async (dispatch) => {
     try {
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         const token = currentUser?.access_token;
+        // console.log('Sending score to server:', score); 
 
         const response = await fetch('http://localhost:5000/auth/update_stats', {
             method: 'POST',
@@ -92,6 +96,7 @@ export const updatePlayerStats = (score) => async (dispatch) => {
         });
 
         const data = await response.json();
+        // console.log('Received data:', data);
         if (response.ok) {
             dispatch({
                 type: 'UPDATE_PLAYER_STATS',
@@ -105,13 +110,19 @@ export const updatePlayerStats = (score) => async (dispatch) => {
     }
 };
 
-// action handlers 
-export const setCurrentQuestionIndex = (index) => (dispatch) => {
-    dispatch({ type: 'SET_CURRENT_QUESTION_INDEX', payload: index });
+// update score
+export const updateScore = (pointsEarned) => (dispatch, getState) => {
+    const currentScore = getState().game.score;
+    const newScore = currentScore + pointsEarned;
+
+    // console.log(`Current Score: ${currentScore}, Adding: ${pointsEarned}, New Score: ${newScore}`);
+
+    dispatch({ type: 'UPDATE_SCORE', payload: newScore });
 };
 
-export const updateScore = (points) => (dispatch) => {
-    dispatch({ type: 'UPDATE_SCORE', payload: points });
+// action handlers
+export const setCurrentQuestionIndex = (index) => (dispatch) => {
+    dispatch({ type: 'SET_CURRENT_QUESTION_INDEX', payload: index });
 };
 
 export const setGameState = (state) => (dispatch) => {

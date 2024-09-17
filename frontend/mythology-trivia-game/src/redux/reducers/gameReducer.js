@@ -29,7 +29,7 @@ const gameReducer = (state = initialState, action) => {
         case SET_CURRENT_QUESTION_INDEX:
             return { ...state, currentQuestionIndex: action.payload };
         case UPDATE_SCORE:
-            return { ...state, score: state.score + action.payload };
+            return { ...state, score: action.payload };
         case SET_TIME_LEFT:
             return { ...state, timeLeft: action.payload };
         case SET_GAME_STATE:
