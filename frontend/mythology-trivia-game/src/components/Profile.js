@@ -38,10 +38,6 @@ const Profile = () => {
 
                     const profileData = await response.json();
 
-                    // for debugging
-                    // console.log("Profile Data:", profileData);
-
-                    // use data from backend!
                     setProfileData({
                         games_played: profileData.games_played,
                         total_score: profileData.total_score,
@@ -55,7 +51,6 @@ const Profile = () => {
                 }
             };
 
-
             fetchProfileData();
         }
     }, [currentUser]);
@@ -65,12 +60,8 @@ const Profile = () => {
         navigate('/login');
     };
 
-    const handleDashboard = () => {
-        navigate('/dashboard');
-    };
-
-    const handleHomeNavigation = () => {
-        navigate('/');
+    const handleNavigation = (path) => {
+        navigate(path);
     };
 
     if (loading) return <div className="loading-text">Loading profile data...</div>;
@@ -93,24 +84,36 @@ const Profile = () => {
                 </div>
             </div>
 
-            <h2>Power-ups</h2>
-            <ul>
-                {profileData.powerups.length ? profileData.powerups.map((powerup, index) => (
-                    <li key={index}>
-                        <span>{powerup.name}:</span> {powerup.description}
-                    </li>
-                )) : <p>No power-ups</p>}
-            </ul>
+            <div className="powerups-section">
+                <h2>Power-ups</h2>
+                <h3 className="powerups-coming-soon">COMING SOON!</h3>
+                {profileData.powerups.length ? (
+                    <ul>
+                        {profileData.powerups.map((powerup, index) => (
+                            <li key={index}>
+                                <span>{powerup.name}:</span> {powerup.description}
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p className="no-powerups">No power-ups acquired yet</p>
+                )}
+            </div>
 
-            <button onClick={handleHomeNavigation} className="home-button">
-                Home
-            </button>
-            <button onClick={handleDashboard} className="dashboard-button">
-                Dashboard
-            </button>
-            <button onClick={handleLogout} className="logout-button">
-                Logout
-            </button>
+            <div className="button-bar">
+                <button onClick={() => handleNavigation('/')} className="home-button">
+                    Home
+                </button>
+                <button onClick={() => handleNavigation('/dashboard')} className="dashboard-button">
+                    Dashboard
+                </button>
+                <button onClick={() => handleNavigation('/gameboard')} className="dashboard-button">
+                    Gameboards
+                </button>
+                <button onClick={handleLogout} className="logout-button">
+                    Logout
+                </button>
+            </div>
         </div>
     )
 };

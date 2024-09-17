@@ -8,21 +8,30 @@ const Home = () => {
     return (
         <div className="home-page">
             <div className="home-container">
-                <h1 className="title">LoreMaster Showdown</h1>
+                <h1 className="title">LoreMaster</h1>
+                <h2 className="subtitle">The Mythology Trivia Game</h2>
+
                 <div className="description">
-                    <p>Mythology Trivia Game</p>
+                    <p>Take a journey through ancient myths and legends</p>
                 </div>
+
                 <div className="features">
-                    <p>Explore different Mythologies🏛️</p>
-                    <p>Compete for the Top Spot🏆</p>
-                    <p>Earn Achievements🌟</p>
+                    <div className="feature">
+                        <span className="feature-icon">🏛️</span>
+                        <p>Explore Mythologies</p>
+                    </div>
+                    <div className="feature">
+                        <span className="feature-icon">🏆</span>
+                        <p>Compete for The Top Spot</p>
+                    </div>
+                    <div className="feature">
+                        <span className="feature-icon">📚</span>
+                        <p>Learn Ancient Stories</p>
+                    </div>
                 </div>
-                <div className="button-container">
+                <div className="button-bar">
                     <button onClick={() => navigate('/register')} className="register-button">
                         Register
-                    </button>
-                    <button onClick={() => navigate('/gameboard')} className="start-button">
-                        Start
                     </button>
                     <button onClick={() => navigate('/login')} className="login-button">
                         Login
