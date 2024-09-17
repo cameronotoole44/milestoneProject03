@@ -1,16 +1,8 @@
-
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './reducers/userReducer';
-import gameReducer from './reducers/gameReducer';
-import dailyChallengeReducer from './reducers/dailyChallengeReducer';
-
+import rootReducer from './reducers/index';
 
 const store = configureStore({
-    reducer: {
-        user: userReducer,
-        game: gameReducer,
-        dailyChallenges: dailyChallengeReducer,
-    },
+    reducer: rootReducer
 });
 
 export default store;
