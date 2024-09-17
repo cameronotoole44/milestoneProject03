@@ -18,19 +18,20 @@ def register():
         return jsonify({"msg": "Username already exists"}), 400
 
     new_user = User(username=username)
-    new_user.set_password(password)
+    new_user.set_password(password) 
 
     db.session.add(new_user)
     db.session.commit()
 
-    # generates token for auto login- just easier for the user
-    access_token = create_access_token(identity=username)
+    # proper access token
+    access_token = create_access_token(identity=new_user.id)
 
     return jsonify({
         "msg": "User registered successfully",
         "user": {"id": new_user.id, "username": new_user.username},
         "access_token": access_token
     }), 201
+
 # better input validation for username/password maybe?
 # def register():
 #     data = request.get_json()
@@ -66,7 +67,7 @@ def login():
     user = User.query.filter_by(username=username).first()
 
     if user and user.check_password(password):
-        access_token = create_access_token(identity=username)
+        access_token = create_access_token(identity=user.id)
         return jsonify(access_token=access_token), 200
     else:
         return jsonify({"msg": "Invalid username or password"}), 401
@@ -80,8 +81,8 @@ def logout():
 @bp.route('/profile', methods=['GET'])
 @jwt_required()
 def get_profile():
-    current_user = get_jwt_identity()
-    user = User.query.filter_by(username=current_user).first()
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
     
     if not user:
         return jsonify({"msg": "User not found"}), 404
@@ -96,10 +97,10 @@ def get_profile():
 @bp.route('/update_stats', methods=['POST'])
 @jwt_required()
 def update_stats():
-    print("Update stats route called")
-    current_user = get_jwt_identity()
-    user = User.query.filter_by(username=current_user).first()
-    print(f"User found: {user}")
+
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    # print(f"User found: {user}")
 
     if not user:
         return jsonify({"msg": "User not found"}), 404

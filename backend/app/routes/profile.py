@@ -6,27 +6,25 @@ bp = Blueprint('profile', __name__)
 
 @bp.route('/profile', methods=['GET'])
 @jwt_required()
-def profile():
-    current_user = get_jwt_identity()
-    user = User.query.filter_by(username=current_user).first()
+def get_profile():
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
     
     if not user:
         return jsonify({"msg": "User not found"}), 404
 
-    response = {
+    return jsonify({
+        "username": user.username,
         "games_played": user.games_played,
         "total_score": user.total_score,
-        "highest_score": user.highest_score,
-        "powerups": [powerup.to_dict() for powerup in user.powerups]
-    }
-    
-    return jsonify(response), 200
+        "highest_score": user.highest_score
+    }), 200
 
 @bp.route('/powerups', methods=['GET'])
 @jwt_required()
 def user_powerups():
-    current_user = get_jwt_identity()
-    user = User.query.filter_by(username=current_user).first()
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id) 
 
     if not user:
         return jsonify({"msg": "User not found"}), 404

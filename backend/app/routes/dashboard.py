@@ -1,7 +1,8 @@
 import random
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.models import User, Question
+from app.models import User, Question, UserDailyChallenge
+from datetime import datetime, timezone, timedelta
 from sqlalchemy import func
 from app import db
 
@@ -62,11 +63,11 @@ def get_random_theme():
 @bp.route('/daily-challenge', methods=['GET'])
 @jwt_required()
 def get_daily_challenge():
-    # user_id = get_jwt_identity()
-    # user = User.query.get(user_id)
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
     
-    # if user.daily_challenge_completed:
-    #     return jsonify({"message": "Daily challenge already completed for today"}), 403
+    if user.daily_challenge_completed:
+        return jsonify({"message": "Daily challenge already completed for today"}), 403
 
     theme = request.args.get('theme')
     
@@ -92,18 +93,29 @@ def get_daily_challenge():
         }
         return jsonify(question_data), 200
     except Exception as e:
-        return jsonify({"error": "An error occurred"}), 500
+        print(f"Error in get_daily_challenge: {e}") # for debugging
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
-# @bp.route('/submit-daily-challenge', methods=['POST'])
-# @jwt_required()
-# def submit_daily_challenge():
-#     user_id = get_jwt_identity()
-#     user = User.query.get(user_id)
 
-#     if not user:
-#         return jsonify({"error": "User not found"}), 404
+@bp.route('/submit-daily-challenge', methods=['POST'])
+@jwt_required()
+def submit_daily_challenge():
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
 
-#     user.daily_challenge_completed = True
-#     db.session.commit()
+    data = request.json
+    question_id = data.get('question_id')
+    answer = data.get('answer')
 
-#     return jsonify({"message": "Daily challenge status updated"}), 200
+    challenge = UserDailyChallenge(
+        user_id=user_id,
+        question_id=question_id,
+        date_answered=datetime.now(timezone.utc),
+        correct=True if answer == 'correct_answer' else False
+    )
+    db.session.add(challenge)
+    db.session.commit()
+
+    return jsonify({"message": "Daily challenge completed"}), 200
