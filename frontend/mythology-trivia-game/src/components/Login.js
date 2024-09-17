@@ -54,10 +54,7 @@ const Login = () => {
                         <button onClick={() => navigate('/')} className="home-button">
                             Home
                         </button>
-                        <button
-                            type="submit"
-                            className="register-button"
-                        >
+                        <button onClick={() => navigate('/register')} className="register-button">
                             Register
                         </button>
                         {error && <p className="error-message">{error}</p>}
