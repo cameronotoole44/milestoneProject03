@@ -8,51 +8,29 @@ import {
 
 export const fetchDailyChallenge = () => async (dispatch) => {
     dispatch({ type: FETCH_DAILY_CHALLENGE_REQUEST });
-
     try {
-        const response = await fetch('http://localhost:5000/daily-challenge');
+        const response = await fetch('http:localhost:5000/daily-challenge');
+        if (!response.ok) throw new Error('Failed to fetch daily challenge'); // added for error handling
         const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || 'Failed to fetch daily challenge');
-        }
-
-        dispatch({
-            type: FETCH_DAILY_CHALLENGE_SUCCESS,
-            payload: data,
-        });
+        dispatch({ type: FETCH_DAILY_CHALLENGE_SUCCESS, payload: data });
     } catch (error) {
-        dispatch({
-            type: FETCH_DAILY_CHALLENGE_FAILURE,
-            payload: error.message,
-        });
+        dispatch({ type: FETCH_DAILY_CHALLENGE_FAILURE, payload: error.message });
     }
 };
 
-
-export const submitDailyChallengeAnswer = (questionId, answer) => async (dispatch) => {
+export const submitDailyChallenge = (questionId, answer) => async (dispatch) => {
     try {
-        const response = await fetch(`http://localhost:5000/daily-challenge/${questionId}/submit`, {
+        const response = await fetch('http:localhost:5000/submit-daily-challenge', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ answer }),
+            body: JSON.stringify({ question_id: questionId, answer }),
         });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Failed to submit answer');
-        }
-
-        dispatch({
-            type: SUBMIT_DAILY_CHALLENGE_SUCCESS,
-        });
+        if (!response.ok) throw new Error('Failed to submit answer');
+        dispatch({ type: SUBMIT_DAILY_CHALLENGE_SUCCESS });
     } catch (error) {
-        dispatch({
-            type: SUBMIT_DAILY_CHALLENGE_FAILURE,
-            payload: error.message,
-        });
+        dispatch({ type: SUBMIT_DAILY_CHALLENGE_FAILURE, payload: error.message });
     }
 };
 
@@ -75,7 +53,6 @@ export const fetchQuestions = (theme) => async (dispatch) => {
         dispatch({ type: 'SET_QUESTIONS', payload: data });
     } catch (error) {
         console.error('Error fetching questions:', error);
-        // Handle error action here if necessary
     }
 };
 
