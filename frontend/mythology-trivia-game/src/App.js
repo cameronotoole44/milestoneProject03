@@ -6,6 +6,7 @@ import Login from './components/Login';
 import Profile from './components/Profile';
 import Register from './components/Register';
 import Dashboard from './components/Dashboard';
+import Leaderboard from './components/Leaderboard';
 import PrivateRoute from './components/Private';
 import Gameboard from './components/Gameboard';
 import NorseBoard from './components/Gameboards/Norse';
@@ -25,6 +26,7 @@ const App = () => {
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/gameboard" element={<Gameboard />} />
           <Route path="/gameboard/norse" element={<NorseBoard />} />
           <Route path="/gameboard/irish" element={<IrishBoard />} />
