@@ -3,6 +3,9 @@ from app.models import Question
 
 app = create_app() # setting up the app context to interact with db
 
+
+# 20 questions
+
 def greek_questions():
     questions = [
         Question(
@@ -94,13 +97,108 @@ def greek_questions():
             option_b="Atlas",
             option_c="Cronus",
             option_d="Hyperion"
-        )
-    ]
+        ),
+        Question( 
+            question_text="Who is the Greek god of the forge and metalworking?", 
+            correct_answer="Hephaestus", 
+            theme="Greek", 
+            option_a="Ares", 
+            option_b="Hephaestus", 
+            option_c="Hermes", 
+            option_d="Dionysus" 
+        ), 
+        Question( 
+            question_text="What is the name of the three-headed dog that guards the entrance to the Greek underworld?", 
+            correct_answer="Cerberus", 
+            theme="Greek", 
+            option_a="Orthrus", 
+            option_b="Cerberus", 
+            option_c="Chimera", 
+            option_d="Hydra" 
+        ), 
+        Question( 
+            question_text="Who is the Greek goddess of the hunt and the moon?", 
+            correct_answer="Artemis", 
+            theme="Greek", 
+            option_a="Hera", 
+            option_b="Artemis", 
+            option_c="Athena", 
+            option_d="Demeter" 
+        ), 
+        Question( 
+            question_text="What is the name of the magical winged sandals worn by Hermes?", 
+            correct_answer="Talaria", 
+            theme="Greek", 
+            option_a="Caduceus", 
+            option_b="Talaria", 
+            option_c="Petasus", 
+            option_d="Aegis" 
+        ), 
+        Question( 
+            question_text="Who is the Greek primordial god of time?", 
+            correct_answer="Chronos", 
+            theme="Greek", 
+            option_a="Aion", 
+            option_b="Chronos", 
+            option_c="Kairos", 
+            option_d="Ananke" 
+        ), 
+        Question( 
+            question_text="What creature in Greek mythology has the head of a man, body of a lion, and tail of a scorpion?", 
+            correct_answer="Manticore", 
+            theme="Greek", 
+            option_a="Chimera", 
+            option_b="Manticore", 
+            option_c="Sphinx", 
+            option_d="Minotaur" 
+        ), 
+        Question( 
+            question_text="Who is the Greek goddess of agriculture and the harvest?",
+            correct_answer="Demeter", theme="Greek", option_a="Persephone", 
+            option_b="Demeter", 
+            option_c="Gaia", 
+            option_d="Rhea" 
+        ), 
+        Question( 
+            question_text="What is the name of the magical horn of plenty in Greek mythology?", 
+            correct_answer="Cornucopia", 
+            theme="Greek", 
+            option_a="Caduceus", 
+            option_b="Cornucopia", 
+            option_c="Thyrsus", 
+            option_d="Aegis" 
+        ), 
+        Question( 
+            question_text="Who is the Greek god of dreams?", 
+            correct_answer="Morpheus", 
+            theme="Greek", 
+            option_a="Hypnos", 
+            option_b="Morpheus", 
+            option_c="Thanatos", 
+            option_d="Phobetor" 
+        ), 
+        Question( 
+            question_text="What is the name of the magical shield used by Zeus and Athena?", 
+            correct_answer="Aegis", 
+            theme="Greek", 
+            option_a="Argo", 
+            option_b="Aegis", 
+            option_c="Aspis", 
+            option_d="Hoplon" 
+        ) 
+]
 
-    db.session.bulk_save_objects(questions)
+
+    for question_data in questions:
+        existing_question = Question.query.filter_by(question_text=question_data.question_text).first()
+        if not existing_question:
+            db.session.add(question_data)
+            print(f"Added question: {question_data.question_text}")
+        else:
+            print(f"Question already exists: {question_data.question_text}")
+
     db.session.commit()
-
-    print("Questions have been successfully inserted!")
+    print("More questions have been successfully inserted!")
 
 
 if __name__ == "__main__":

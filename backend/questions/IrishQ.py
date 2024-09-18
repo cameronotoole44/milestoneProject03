@@ -3,7 +3,8 @@ from app.models import Question
 
 app = create_app() # setting up the app context to interact with db
 
- 
+# 20 questions
+
 def irish_questions():
     questions = [
         Question(

@@ -3,7 +3,7 @@ from app.models import Question
 
 app = create_app() # setting up the app context to interact with db
 
-# BULK INSERT TIME 
+# 20 questions
 def norse_questions():
     questions = [
         Question(
@@ -34,7 +34,7 @@ def norse_questions():
             option_d="Heidrun"           
         ),
         Question(
-            question_text="Who are Thor's brothers?",
+            question_text="Who are Thor's brothers?", # i might be cooked, is this a sentence?
             correct_answer="Baldr, Víðarr and Váli",
             theme="Norse",
             option_a="Baldr, Loki, and Váli",  
@@ -95,12 +95,110 @@ def norse_questions():
             option_b="Bifröst",
             option_c="Mímisbrunnr",
             option_d="Valhalla"
+        ),
+        Question(
+            question_text="Which creature continually gnaws at the roots of Yggdrasil?",
+            correct_answer="Nidhogg",
+            theme="Norse",
+            option_a="Fenrir",
+            option_b="Jormungandr",
+            option_c="Nidhogg",
+            option_d="Ratatoskr"
+        ),
+        Question(
+            question_text="Who is the guardian of the Bifröst Bridge?",
+            correct_answer="Heimdall",
+            theme="Norse",
+            option_a="Tyr",
+            option_b="Heimdall",
+            option_c="Bragi",
+            option_d="Forseti"
+        ),
+        Question(
+            question_text="What is the name of Odin's eight-legged horse?",
+            correct_answer="Sleipnir",
+            theme="Norse",
+            option_a="Gullfaxi",
+            option_b="Svadilfari",
+            option_c="Sleipnir",
+            option_d="Hófvarpnir"
+        ),
+        Question(
+            question_text="Who is the goddess of death in Norse mythology?",
+            correct_answer="Hel",
+            theme="Norse",
+            option_a="Frigg",
+            option_b="Hel",
+            option_c="Sif",
+            option_d="Idunn"
+        ),
+        Question(
+            question_text="What is the name of Thor's hammer?",
+            correct_answer="Mjölnir",
+            theme="Norse",
+            option_a="Gungnir",
+            option_b="Mjölnir",
+            option_c="Hofund",
+            option_d="Gram"
+        ),
+        Question(
+            question_text="Which Norse god is associated with poetry and music?",
+            correct_answer="Bragi",
+            theme="Norse",
+            option_a="Ullr",
+            option_b="Vidar",
+            option_c="Bragi",
+            option_d="Hoenir"
+        ),
+        Question(
+            question_text="What is the name of the magical cauldron that never runs out of mead?",
+            correct_answer="Heidrun",
+            theme="Norse",
+            option_a="Gjallarhorn",
+            option_b="Heidrun",
+            option_c="Brisingamen",
+            option_d="Draupnir"
+        ),
+        Question(
+            question_text="Who is the wife of Odin?",
+            correct_answer="Frigg",
+            theme="Norse",
+            option_a="Freyja",
+            option_b="Sif",
+            option_c="Frigg",
+            option_d="Idun"
+        ),
+        Question(
+            question_text="What is the name of the squirrel that runs up and down Yggdrasil?",
+            correct_answer="Ratatoskr",
+            theme="Norse",
+            option_a="Nidhogg",
+            option_b="Jormungandr",
+            option_c="Ratatoskr",
+            option_d="Hraesvelgr"
+        ),
+        Question(
+            question_text="Which giant is fated to kill Odin during Ragnarök?",
+            correct_answer="Fenrir",
+            theme="Norse",
+            option_a="Surtr",
+            option_b="Fenrir",
+            option_c="Jormungandr",
+            option_d="Hyrm"
         )
     ]
 
-    db.session.bulk_save_objects(questions)
-    db.session.commit()
+# add this script to check for duplicate questions when inserting the new sets**
 
+    for question_data in questions:
+        existing_question = Question.query.filter_by(question_text=question_data.question_text).first()
+        if not existing_question:
+            db.session.add(question_data)
+            print(f"Added question: {question_data.question_text}")
+        else:
+            print(f"Question already exists: {question_data.question_text}")
+
+    db.session.commit()
     print("Questions have been successfully inserted!")
 
 
