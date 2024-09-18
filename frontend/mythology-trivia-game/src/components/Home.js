@@ -1,9 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { useCurrentUser } from '../redux/currentUser';
 
 const Home = () => {
     const navigate = useNavigate();
+    const { currentUser, logout } = useCurrentUser();
 
     return (
         <div className="home-page">
@@ -29,13 +30,27 @@ const Home = () => {
                         <p>Learn Ancient Stories</p>
                     </div>
                 </div>
+
                 <div className="button-bar">
-                    <button onClick={() => navigate('/register')} className="register-button">
-                        Register
-                    </button>
-                    <button onClick={() => navigate('/login')} className="login-button">
-                        Login
-                    </button>
+                    {currentUser ? (
+                        <>
+                            <button onClick={() => navigate('/dashboard')} className="dashboard-button">
+                                Dashboard
+                            </button>
+                            <button onClick={logout} className="logout-button">
+                                Logout
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <button onClick={() => navigate('/register')} className="register-button">
+                                Register
+                            </button>
+                            <button onClick={() => navigate('/login')} className="login-button">
+                                Login
+                            </button>
+                        </>
+                    )}
                 </div>
             </div>
         </div>

@@ -25,13 +25,15 @@ const CurrentUser = ({ children }) => {
     const logout = () => {
         setCurrentUser(null);
         localStorage.removeItem('currentUser');
+        window.location.reload(); // app reloads and reloads state
     };
+
 
     return (
         <CurrentUserContext.Provider value={{ currentUser, login, logout }}>
             {children}
         </CurrentUserContext.Provider>
-    );
+    )
 };
 
 export default CurrentUser;
