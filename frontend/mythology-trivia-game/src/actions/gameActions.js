@@ -59,36 +59,52 @@ export const fetchDailyChallenge = () => async (dispatch, getState) => {
     }
 };
 
+// submit answer
+export const submitAnswer = (questionId, selectedAnswer) => async (dispatch, getState) => {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const token = currentUser?.access_token;
 
-export const submitAnswer = (selectedAnswer) => async (dispatch, getState) => {
-    const { dailyChallenge } = getState().dailyChallenge;
-
-    if (!dailyChallenge) return;
+    if (!currentUser) return;
 
     dispatch({ type: SUBMIT_DAILY_CHALLENGE_REQUEST });
 
     try {
+        const response = await fetch('http://localhost:5000/submit-daily-challenge', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                question_id: questionId,
+                answer: selectedAnswer
+            })
+        });
 
-        // need to come back and send to backend, client-side ez for now, i'll come back and send answer to backend
-        const isCorrect = selectedAnswer === dailyChallenge.correct_answer;
-        await new Promise(resolve => setTimeout(resolve, 500));
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
 
         dispatch({
             type: SUBMIT_DAILY_CHALLENGE_SUCCESS,
             payload: {
-                feedback: isCorrect ? "Correct! Great job!" : "Sorry, that's incorrect. Try again!",
-                selectedAnswer
+                feedback: data.correct ? "Correct! Great job!" : "Sorry, that's incorrect. Try again!",
+                isCorrect: data.correct,
+                completed: true
             }
         });
     } catch (error) {
         console.error('Error submitting answer:', error);
         dispatch({
             type: SUBMIT_DAILY_CHALLENGE_FAILURE,
-            error: 'Error submitting answer'
+            error: error.message || 'Error submitting answer'
         });
     }
 };
 
+// questions
 export const fetchQuestions = (theme) => async (dispatch) => {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     const token = currentUser?.access_token;
