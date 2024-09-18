@@ -24,7 +24,7 @@ def create_app(config_class=Config):
 
 
     app.config.from_object(config_class)
-    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1) 
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=2) 
     
     db.init_app(app)
     migrate.init_app(app, db)
