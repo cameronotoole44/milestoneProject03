@@ -2,26 +2,41 @@ import React, { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { fetchDailyChallenge, submitAnswer } from '../actions/gameActions';
 import { logoutUser } from "../actions/userActions";
 
 const Dashboard = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const currentUser = useSelector((state) => state.user.currentUser);
+    const dailyChallenge = useSelector((state) => state.dailyChallenge.dailyChallenge);
+    const feedback = useSelector((state) => state.dailyChallenge.feedback);
+    const isCorrect = useSelector((state) => state.dailyChallenge.isCorrect);
+    const challengeCompleted = useSelector((state) => state.dailyChallenge.completed);
+    const loading = useSelector((state) => state.dailyChallenge.loading);
     const [timeOfDay, setTimeOfDay] = useState("");
     const [currentTime, setCurrentTime] = useState(new Date());
-    const [dailyChallenge, setDailyChallenge] = useState(null);
     const [selectedAnswer, setSelectedAnswer] = useState("");
-    const [feedback, setFeedback] = useState("");
 
     const token = currentUser?.access_token;
 
-    // login redirect
+
     useEffect(() => {
+        const handleLogoutCleanup = () => {
+            localStorage.removeItem('dailyChallengeData'); // clears local storage on logout
+        };
+
         if (!currentUser) {
-            navigate('/login');
+            handleLogoutCleanup();
         }
-    }, [currentUser, navigate]);
+    }, [currentUser]);
+
+    useEffect(() => {
+        if (token && currentUser) {
+            console.log("Fetching fresh daily challenge for user:", currentUser.username);
+            dispatch(fetchDailyChallenge());
+        }
+    }, [dispatch, token, currentUser]);
 
     useEffect(() => {
         const updateGreeting = () => {
@@ -44,38 +59,6 @@ const Dashboard = () => {
         return () => clearInterval(timer);
     }, []);
 
-    useEffect(() => {
-        const fetchDailyChallenge = async () => {
-            try {
-                const themeResponse = await fetch('http://localhost:5000/random-theme', {
-                    method: 'GET',
-                    headers: { 'Authorization': `Bearer ${token}` },
-                });
-
-                if (themeResponse.ok) {
-                    const themeData = await themeResponse.json();
-                    const theme = themeData.theme;
-
-                    const challengeResponse = await fetch(`http://localhost:5000/daily-challenge?theme=${theme}`, {
-                        method: 'GET',
-                        headers: { 'Authorization': `Bearer ${token}` },
-                    });
-
-                    if (challengeResponse.ok) {
-                        const data = await challengeResponse.json();
-                        setDailyChallenge(data); // updates state
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching daily challenge:', error);
-            }
-        };
-
-        if (token) {
-            fetchDailyChallenge();
-        }
-    }, [token]);
-
     const formattedTime = format(currentTime, "hh:mm a");
     const formattedDate = format(currentTime, "do MMMM yyyy");
 
@@ -94,6 +77,10 @@ const Dashboard = () => {
         navigate('/');
     };
 
+    const handleGameboardNavigation = () => {
+        navigate('/gameboard');
+    };
+
     const handleLeaderboardNavigation = () => {
         navigate('/leaderboard');
     };
@@ -102,11 +89,10 @@ const Dashboard = () => {
         setSelectedAnswer(event.target.value);
     };
 
+    // daily challenge answer submission
     const handleSubmitAnswer = () => {
-        if (selectedAnswer === dailyChallenge.correct_answer) {
-            setFeedback("Correct! Great job!");
-        } else {
-            setFeedback("Sorry, that's incorrect. Try again!");
+        if (dailyChallenge && dailyChallenge.id) {
+            dispatch(submitAnswer(dailyChallenge.id, selectedAnswer));
         }
     };
 
@@ -125,7 +111,11 @@ const Dashboard = () => {
                 </p>
                 <div className="daily-challenge">
                     <h2 className="daily-challenge-title">Daily Challenge</h2>
-                    {dailyChallenge ? (
+                    {loading ? (
+                        <p>Loading challenge...</p>
+                    ) : challengeCompleted ? (
+                        <p>You have completed the daily challenge. Come back tomorrow for a new one!</p>
+                    ) : dailyChallenge && dailyChallenge.question_text ? (
                         <>
                             <p className="daily-challenge-question">{dailyChallenge.question_text}</p>
                             <form>
@@ -146,29 +136,33 @@ const Dashboard = () => {
                                     Submit Answer
                                 </button>
                             </form>
-                            {feedback && <p className="feedback-text">{feedback}</p>}
                         </>
                     ) : (
-                        <p>Loading challenge...</p>
+                        <p>No challenge available at the moment.</p>
+                    )}
+                    {feedback && (
+                        <p className={`feedback-text ${isCorrect ? 'correct' : 'incorrect'}`}>
+                            {feedback}
+                        </p>
                     )}
                 </div>
 
-                <div>
-                    <h2 className="quick-links-title">Quick Links</h2>
-                    <div className="quick-links-container">
-                        <button onClick={handleHomeNavigation} className="dashboard-button">
-                            Home
-                        </button>
-                        <button onClick={handleLeaderboardNavigation} className="dashboard-button">
-                            Leaderboard
-                        </button>
-                        <button onClick={handleProfile} className="dashboard-button">
-                            Profile
-                        </button>
-                        <button onClick={handleLogout} className="logout-button">
-                            Logout
-                        </button>
-                    </div>
+                <div className="button-bar">
+                    <button onClick={handleHomeNavigation} className="dashboard-button">
+                        Home
+                    </button>
+                    <button onClick={handleLeaderboardNavigation} className="dashboard-button">
+                        Leaderboard
+                    </button>
+                    <button onClick={handleGameboardNavigation} className="dashboard-button">
+                        Gameboards
+                    </button>
+                    <button onClick={handleProfile} className="dashboard-button">
+                        Profile
+                    </button>
+                    <button onClick={handleLogout} className="logout-button">
+                        Logout
+                    </button>
                 </div>
             </div>
         </div>

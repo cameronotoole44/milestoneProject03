@@ -64,23 +64,16 @@ def get_random_theme():
 @jwt_required()
 def get_daily_challenge():
     user_id = get_jwt_identity()
-    user = User.query.get(user_id)
-    
-    if user.daily_challenge_completed:
-        return jsonify({"message": "Daily challenge already completed for today"}), 403
+    today = datetime.now(timezone.utc).date()
 
-    theme = request.args.get('theme')
+    # does user have a daily challenge for the day
+    daily_challenge = UserDailyChallenge.query.filter_by(user_id=user_id, date_answered=today).first()
     
-    if not theme:
-        return jsonify({"error": "Theme parameter is required"}), 400
-    
-    try:
-        question = db.session.query(Question).filter_by(theme=theme).order_by(db.func.random()).first()
-        
+    if daily_challenge:
+        question = Question.query.get(daily_challenge.question_id)
         if not question:
-            return jsonify({"error": "No questions found for the given theme"}), 404
-        
-        question_data = {
+            return jsonify({"error": "Question not found"}), 404
+        return jsonify({
             "id": question.id,
             "question_text": question.question_text,
             "options": [
@@ -88,34 +81,53 @@ def get_daily_challenge():
                 {"text": question.option_b},
                 {"text": question.option_c},
                 {"text": question.option_d},
-            ],
-            "correct_answer": question.correct_answer
-        }
-        return jsonify(question_data), 200
-    except Exception as e:
-        print(f"Error in get_daily_challenge: {e}") # for debugging
-        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+            ]
+        }), 200
+    
+    # generate a new challenge
+    theme = request.args.get('theme')
+    if not theme:
+        return jsonify({"error": "Theme parameter is required"}), 400
+    question = db.session.query(Question).filter_by(theme=theme).order_by(db.func.random()).first()
+    if not question:
+        return jsonify({"error": "No questions found for the given theme"}), 404
+    new_daily_challenge = UserDailyChallenge(user_id=user_id, question_id=question.id, date_answered=today, correct=False)
+    db.session.add(new_daily_challenge)
+    db.session.commit()
+
+    return jsonify({
+        "id": question.id,
+        "question_text": question.question_text,
+        "options": [
+            {"text": question.option_a},
+            {"text": question.option_b},
+            {"text": question.option_c},
+            {"text": question.option_d},
+        ]
+    }), 200
 
 
 @bp.route('/submit-daily-challenge', methods=['POST'])
 @jwt_required()
 def submit_daily_challenge():
     user_id = get_jwt_identity()
-    user = User.query.get(user_id)
-    if not user:
-        return jsonify({"error": "User not found"}), 404
-
     data = request.json
     question_id = data.get('question_id')
-    answer = data.get('answer')
+    submitted_answer = data.get('answer')
 
-    challenge = UserDailyChallenge(
-        user_id=user_id,
-        question_id=question_id,
-        date_answered=datetime.now(timezone.utc),
-        correct=True if answer == 'correct_answer' else False
-    )
-    db.session.add(challenge)
+    question = Question.query.get(question_id)
+    if not question:
+        return jsonify({"error": "Question not found"}), 404
+
+    is_correct = submitted_answer.strip().lower() == question.correct_answer.strip().lower()
+
+    daily_challenge = UserDailyChallenge.query.filter_by(user_id=user_id, question_id=question_id).first()
+    if not daily_challenge:
+        return jsonify({"error": "Daily challenge not found"}), 404
+
+    daily_challenge.correct = is_correct
+    daily_challenge.date_answered = datetime.now(timezone.utc)
     db.session.commit()
 
-    return jsonify({"message": "Daily challenge completed"}), 200
+    return jsonify({"message": "Daily challenge completed", "correct": is_correct}), 200
+

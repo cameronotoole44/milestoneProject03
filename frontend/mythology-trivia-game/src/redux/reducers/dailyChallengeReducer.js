@@ -11,6 +11,7 @@ const initialState = {
     dailyChallenge: null,
     loading: false,
     error: null,
+    completed: false,
     feedback: '',
     selectedAnswer: ''
 };
@@ -20,7 +21,13 @@ const dailyChallengeReducer = (state = initialState, action) => {
         case FETCH_DAILY_CHALLENGE_REQUEST:
             return { ...state, loading: true, error: null };
         case FETCH_DAILY_CHALLENGE_SUCCESS:
-            return { ...state, loading: false, dailyChallenge: action.payload, error: null };
+            return {
+                ...state,
+                loading: false,
+                dailyChallenge: action.payload,
+                completed: false,
+                feedback: ''
+            };
         case FETCH_DAILY_CHALLENGE_FAILURE:
             return { ...state, loading: false, error: action.error };
         case SUBMIT_DAILY_CHALLENGE_REQUEST:
@@ -29,9 +36,8 @@ const dailyChallengeReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                feedback: action.payload.feedback,
-                selectedAnswer: action.payload.selectedAnswer,
-                error: null
+                completed: true,
+                feedback: action.payload.feedback
             };
         case SUBMIT_DAILY_CHALLENGE_FAILURE:
             return { ...state, loading: false, error: action.error };
