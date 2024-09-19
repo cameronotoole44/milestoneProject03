@@ -9,7 +9,8 @@ user_powerup = db.Table('user_powerup',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
     db.Column('powerup_id', db.Integer, db.ForeignKey('powerup.id'), primary_key=True),
     db.Column('is_used', db.Boolean, default=False),
-    db.Column('earned_at', db.DateTime)
+    db.Column('earned_at', db.DateTime, default=db.func.now()),
+    db.Column('quantity', db.Integer, default=1)
 )
 
 class User(db.Model):

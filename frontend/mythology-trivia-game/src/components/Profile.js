@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import PowerUps from '../components/powerups/PowerUpsProfile';
 import { logoutUser } from "../actions/userActions";
 
 const Profile = () => {
@@ -12,7 +13,7 @@ const Profile = () => {
         games_played: 0,
         total_score: 0,
         highest_score: 0,
-        powerups: []
+        user_powerup: []
     });
 
     const [loading, setLoading] = useState(true);
@@ -85,19 +86,7 @@ const Profile = () => {
             </div>
 
             <div className="powerups-section">
-                <h2>Power-ups</h2>
-                <h3 className="powerups-coming-soon">COMING SOON!</h3>
-                {profileData.powerups.length ? (
-                    <ul>
-                        {profileData.powerups.map((powerup, index) => (
-                            <li key={index}>
-                                <span>{powerup.name}:</span> {powerup.description}
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p className="no-powerups">No power-ups acquired yet</p>
-                )}
+                <PowerUps powerups={profileData.powerups} />
             </div>
 
             <div className="button-bar">
@@ -107,7 +96,7 @@ const Profile = () => {
                 <button onClick={() => handleNavigation('/dashboard')} className="dashboard-button">
                     Dashboard
                 </button>
-                <button onClick={() => handleNavigation('/gameboard')} className="dashboard-button">
+                <button onClick={() => handleNavigation('/gameboard')} className="gameboard-button">
                     Gameboards
                 </button>
                 <button onClick={handleLogout} className="logout-button">
@@ -119,4 +108,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
