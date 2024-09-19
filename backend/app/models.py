@@ -18,13 +18,13 @@ class User(db.Model):
     username = db.Column(db.String(64), unique=True, index=True)  # make sure the username is unique with an index
     password_hash = db.Column(db.String(256)) 
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc)) 
-    
+    active_power_ups = db.Column(db.JSON, default=list)    
     # user stats
     games_played = db.Column(db.Integer, default=0)
     total_score = db.Column(db.Integer, default=0)
     highest_score = db.Column(db.Integer, default=0)
     daily_challenge_completed = db.Column(db.Boolean, default=False)
-    active_power_ups = db.Column(db.JSON, default=list)
+
     # many-to-many relationship
     powerups = db.relationship('PowerUp', secondary=user_powerup,
                                backref=db.backref('users', lazy='dynamic'))
@@ -80,6 +80,7 @@ class PowerUp(db.Model):
 
     def __repr__(self):
         return f'<PowerUp {self.name}>'
+
 
 
 
