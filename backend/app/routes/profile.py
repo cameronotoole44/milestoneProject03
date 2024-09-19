@@ -1,5 +1,6 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from app.power.PowerUpActivation import activate_thors_fury, activate_athenas_insight
 from ..models import User
 
 bp = Blueprint('profile', __name__)
@@ -20,11 +21,11 @@ def get_profile():
         "highest_score": user.highest_score
     }), 200
 
-@bp.route('/powerups', methods=['GET'])
+@bp.route('/profile/powerups', methods=['GET'])
 @jwt_required()
 def user_powerups():
     current_user_id = get_jwt_identity()
-    user = User.query.get(current_user_id) 
+    user = User.query.get(current_user_id)
 
     if not user:
         return jsonify({"msg": "User not found"}), 404
@@ -35,3 +36,22 @@ def user_powerups():
         "username": user.username,
         "powerups": powerups_data
     }), 200
+
+@bp.route('/powerups/activate', methods=['POST'])
+@jwt_required()
+def activate_powerup():
+    data = request.get_json()
+    powerup_name = data['powerup_name']
+    user_id = get_jwt_identity()
+
+    if not User.query.get(user_id):
+        return jsonify({"msg": "User not found"}), 404
+
+    if powerup_name == 'Thor\'s Fury':
+        activate_thors_fury(user_id)
+    elif powerup_name == 'Athena\'s Insight':
+        activate_athenas_insight(user_id)
+    else:
+        return jsonify({"msg": "Invalid power-up name"}), 400
+
+    return jsonify({'message': 'Power-up activated'}), 200

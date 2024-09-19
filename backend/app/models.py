@@ -7,7 +7,9 @@ import re
 # association table
 user_powerup = db.Table('user_powerup',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
-    db.Column('powerup_id', db.Integer, db.ForeignKey('powerup.id'), primary_key=True)
+    db.Column('powerup_id', db.Integer, db.ForeignKey('powerup.id'), primary_key=True),
+    db.Column('is_used', db.Boolean, default=False),
+    db.Column('earned_at', db.DateTime)
 )
 
 class User(db.Model):
@@ -22,6 +24,7 @@ class User(db.Model):
     total_score = db.Column(db.Integer, default=0)
     highest_score = db.Column(db.Integer, default=0)
     daily_challenge_completed = db.Column(db.Boolean, default=False)
+    active_power_ups = db.Column(db.JSON, default=list)
     # many-to-many relationship
     powerups = db.relationship('PowerUp', secondary=user_powerup,
                                backref=db.backref('users', lazy='dynamic'))
@@ -72,9 +75,12 @@ class PowerUp(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
     description = db.Column(db.String(200), nullable=False)
+    activation_conditions = db.Column(db.String(255))
+    usage_limit = db.Column(db.Integer)  # times it can be used
 
     def __repr__(self):
         return f'<PowerUp {self.name}>'
+
 
 
 class Question(db.Model):
