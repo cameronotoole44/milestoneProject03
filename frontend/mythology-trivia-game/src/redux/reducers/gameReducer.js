@@ -8,7 +8,8 @@ import {
     SET_POWER_UPS,
     SET_ACTIVE_POWER_UP,
     END_GAME,
-    UPDATE_PLAYER_STATS
+    UPDATE_PLAYER_STATS,
+    SET_USER_POWERUPS
 } from '../../actions/actionTypes';
 
 const initialState = {
@@ -19,7 +20,8 @@ const initialState = {
     gameState: 'countdown',
     countdown: 5,
     powerUps: [],
-    activePowerUp: null
+    activePowerUp: null,
+    userPowerups: []
 };
 
 const gameReducer = (state = initialState, action) => {
@@ -40,6 +42,8 @@ const gameReducer = (state = initialState, action) => {
             return { ...state, powerUps: action.payload };
         case SET_ACTIVE_POWER_UP:
             return { ...state, activePowerUp: action.payload };
+        case SET_USER_POWERUPS:
+            return { ...state, userPowerups: action.payload };
         case END_GAME:
             return { ...state, endGame: action.payload };
         case UPDATE_PLAYER_STATS:

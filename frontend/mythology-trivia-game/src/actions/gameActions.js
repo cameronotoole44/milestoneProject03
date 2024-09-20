@@ -5,6 +5,8 @@ import {
     SUBMIT_DAILY_CHALLENGE_REQUEST,
     SUBMIT_DAILY_CHALLENGE_SUCCESS,
     SUBMIT_DAILY_CHALLENGE_FAILURE,
+    ACTIVATE_POWERUP_SUCCESS,
+    ACTIVATE_POWERUP_FAILURE,
     UPDATE_PLAYER_STATS,
     UPDATE_SCORE,
     SET_QUESTIONS,
@@ -13,6 +15,7 @@ import {
     SET_COUNTDOWN,
     SET_TIME_LEFT,
     SET_POWER_UPS,
+    SET_USER_POWERUPS,
     SET_ACTIVE_POWER_UP,
     SET_FEEDBACK
 } from './actionTypes';
@@ -166,6 +169,43 @@ export const updateScore = (pointsEarned) => (dispatch, getState) => {
     dispatch({ type: UPDATE_SCORE, payload: newScore });
 };
 
+
+//  power ips
+export const fetchUserPowerUps = () => async (dispatch, getState) => {
+    const token = getState().user.currentUser.access_token;
+
+    try {
+        const response = await fetch('http://localhost:5000/profile/powerups', {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${token}` },
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch user power-ups');
+
+        const data = await response.json();
+        dispatch({
+            type: SET_USER_POWERUPS,
+            payload: data.powerups,
+        });
+    } catch (error) {
+        console.error('Error fetching user power-ups:', error);
+    }
+};
+
+
+// activate powerup success
+export const activatePowerUpSuccess = (message, powerupName) => ({
+    type: ACTIVATE_POWERUP_SUCCESS,
+    payload: { message, powerupName }
+});
+
+// activate powerup fail
+export const activatePowerUpFailure = (error) => ({
+    type: ACTIVATE_POWERUP_FAILURE,
+    payload: error
+});
+
+
 // action handlers
 export const setCurrentQuestionIndex = (index) => (dispatch) => {
     dispatch({ type: SET_CURRENT_QUESTION_INDEX, payload: index });
@@ -185,6 +225,10 @@ export const setTimeLeft = (time) => (dispatch) => {
 
 export const setPowerUps = (powerUps) => (dispatch) => {
     dispatch({ type: SET_POWER_UPS, payload: powerUps });
+};
+
+export const setUserPowerUps = (powerUps) => (dispatch) => {
+    dispatch({ type: SET_USER_POWERUPS, payload: powerUps });
 };
 
 export const setActivePowerUp = (powerUp) => (dispatch) => {
