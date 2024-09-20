@@ -14,7 +14,7 @@ import IrishBoard from './components/Gameboards/Irish';
 import GreekBoard from './components/Gameboards/Greek';
 import EgyptianBoard from './components/Gameboards/Egyptian';
 import JapaneseBoard from './components/Gameboards/Japanese';
-
+import ChineseBoard from './components/Gameboards/Chinese';
 
 const App = () => {
   return (
@@ -33,6 +33,7 @@ const App = () => {
           <Route path="/gameboard/greek" element={<GreekBoard />} />
           <Route path="/gameboard/egyptian" element={<EgyptianBoard />} />
           <Route path="/gameboard/japanese" element={<JapaneseBoard />} />
+          <Route path="/gameboard/chinese" element={<ChineseBoard />} />
         </Route>
       </Routes>
     </Router>

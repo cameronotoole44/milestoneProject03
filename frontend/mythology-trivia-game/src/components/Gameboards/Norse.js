@@ -11,8 +11,8 @@ import {
     setTimeLeft,
     setGameState,
     setCountdown,
-    setActivePowerUp,
-    setPowerUps,
+    // setActivePowerUp,
+    // setPowerUps,
     updatePlayerStats
 } from '../../actions/gameActions';
 
@@ -26,15 +26,13 @@ function NorseGame() {
         timeLeft,
         gameState,
         countdown,
-        powerUps,
-        activePowerUp,
+        // powerUps,
+        // activePowerUp,
     } = useSelector(state => state.game);
-
 
     useEffect(() => {
         dispatch(fetchQuestions('Norse'));
     }, [dispatch]);
-
 
     const handleEndGame = useCallback(() => {
         dispatch(setGameState('ended'));
@@ -42,7 +40,6 @@ function NorseGame() {
         dispatch(updatePlayerStats(finalScore));
     }, [dispatch]);
 
-    // countdown and timer
     useEffect(() => {
         let timer;
         if (gameState === 'countdown' && countdown > 0) {
@@ -57,44 +54,37 @@ function NorseGame() {
         return () => clearInterval(timer);
     }, [gameState, countdown, timeLeft, dispatch, handleEndGame]);
 
-    // user answer
     const handleAnswer = (isCorrect) => {
         let pointsEarned = 0;
 
         if (isCorrect) {
             pointsEarned = 10;
-            if (activePowerUp === 'ThorsFury') {
-                pointsEarned *= 2;
-                dispatch(setActivePowerUp(null));
-            }
+            // if (activePowerUp === 'ThorsFury') {
+            //     pointsEarned *= 2;
+            //     dispatch(setActivePowerUp(null));
+            // }
             console.log(`Points earned this round: ${pointsEarned}`);
             dispatch(setTimeLeft(Math.min(timeLeft + 5, 60))); // add 5 seconds for correct answers
         } else {
-            if (activePowerUp === 'AthenasInsight') {
-                dispatch(setActivePowerUp(null));
-            } else {
-                dispatch(setTimeLeft(Math.max(timeLeft - 3, 0))); // subtract 3 seconds for wrong answers
-            }
+            // if (activePowerUp === 'AthenasInsight') {
+            //     dispatch(setActivePowerUp(null));
+            // } else {
+            dispatch(setTimeLeft(Math.max(timeLeft - 3, 0))); // subtract 3 seconds for wrong answers
         }
 
-        // update the score
         dispatch(updateScore(pointsEarned));
 
-        // was it the last question?
         if (currentQuestionIndex + 1 >= questions.length) {
-            // if it was, wait for the score to update before ending the game
             setTimeout(() => {
                 const finalScore = store.getState().game.score;
                 dispatch(setGameState('ended'));
                 dispatch(updatePlayerStats(finalScore));
             }, 0);
         } else {
-            // if it wasn't, move to the next question
             dispatch(setCurrentQuestionIndex(currentQuestionIndex + 1));
         }
     };
 
-    // use updated score from redux
     const currentScore = useSelector((state) => state.game.score);
 
     useEffect(() => {
@@ -114,13 +104,11 @@ function NorseGame() {
         navigate('/login');
     };
 
-
-    // POWER UP SECTION** //
-    const activatePowerUp = (powerUp) => {
-        dispatch(setActivePowerUp(powerUp.name));
-        dispatch(setPowerUps(powerUps.filter(p => p.id !== powerUp.id)));
-    };
-
+    // // POWER UP SECTION** //
+    // const activatePowerUp = (powerUp) => {
+    //     dispatch(setActivePowerUp(powerUp.name));
+    //     dispatch(setPowerUps(powerUps.filter(p => p.id !== powerUp.id)));
+    // };
 
     const renderQuestion = () => {
         if (questions.length === 0) {
@@ -128,7 +116,6 @@ function NorseGame() {
         }
 
         const question = questions[currentQuestionIndex];
-        // check to make sure options is available before mapping over
         if (!question || !question.options) {
             return <p>Loading...</p>;
         }
@@ -146,7 +133,7 @@ function NorseGame() {
                     ))}
                 </div>
             </div>
-        )
+        );
     };
 
     const renderEndGameMessage = () => {
@@ -181,18 +168,18 @@ function NorseGame() {
                         <span>Time left: {timeLeft}s</span>
                     </div>
                     {questions.length > 0 ? renderQuestion() : <p>Loading questions...</p>}
-                    <div className="norse-power-ups">
+                    {/* <div className="norse-power-ups">
                         {powerUps.map(powerUp => (
                             <button key={powerUp.id} onClick={() => activatePowerUp(powerUp)}>
                                 {powerUp.name}
                             </button>
                         ))}
-                    </div>
+                    </div> */}
                 </>
             )}
             {gameState === 'ended' && renderEndGameMessage()}
         </div>
-    )
-};
+    );
+}
 
 export default NorseGame;
