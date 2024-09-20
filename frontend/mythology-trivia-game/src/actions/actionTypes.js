@@ -5,6 +5,8 @@ export const USER_LOGIN_FAIL = 'USER_LOGIN_FAIL';
 export const USER_LOGOUT = 'USER_LOGOUT';
 
 // GAME ACTION TYPES //
+export const PAUSE = "PAUSE";
+export const RESUME = "RESUME";
 export const SET_QUESTIONS = 'SET_QUESTIONS';
 export const SET_CURRENT_QUESTION_INDEX = 'SET_CURRENT_QUESTION_INDEX';
 export const UPDATE_SCORE = 'UPDATE_SCORE';

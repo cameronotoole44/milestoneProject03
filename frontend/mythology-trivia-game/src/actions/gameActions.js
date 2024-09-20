@@ -17,7 +17,9 @@ import {
     SET_POWER_UPS,
     SET_USER_POWERUPS,
     SET_ACTIVE_POWER_UP,
-    SET_FEEDBACK
+    SET_FEEDBACK,
+    PAUSE,
+    RESUME
 } from './actionTypes';
 
 export const fetchDailyChallenge = () => async (dispatch, getState) => {
@@ -213,6 +215,13 @@ export const setCurrentQuestionIndex = (index) => (dispatch) => {
 
 export const setGameState = (state) => (dispatch) => {
     dispatch({ type: SET_GAME_STATE, payload: state });
+};
+export const pause = () => {
+    return { type: PAUSE }
+};
+
+export const resume = () => {
+    return { type: RESUME }
 };
 
 export const setCountdown = (countdown) => (dispatch) => {

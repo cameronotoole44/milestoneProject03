@@ -2,7 +2,7 @@ import React, { useEffect, useCallback } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import { logoutUser } from "../../actions/userActions";
-import store from '../../redux/store'
+import store from '../../redux/store';
 
 import {
     fetchQuestions,
@@ -104,12 +104,20 @@ function JapaneseGame() {
         navigate('/login');
     };
 
+    // pause/resume 
+    const handlePause = () => {
+        dispatch(setGameState('paused'));
+    };
+
+    const handleResume = () => {
+        dispatch(setGameState('playing'));
+    };
+
     // // POWER UP SECTION** //
     // const activatePowerUp = (powerUp) => {
     //     dispatch(setActivePowerUp(powerUp.name));
     //     dispatch(setPowerUps(powerUps.filter(p => p.id !== powerUp.id)));
     // };
-
     const renderQuestion = () => {
         if (questions.length === 0) {
             return <p>No more questions available. Please check back soon!</p>;
@@ -177,7 +185,19 @@ function JapaneseGame() {
                     </div> */}
                 </>
             )}
+            {gameState === 'paused' && (
+                <div className="paused-overlay">
+                    <h2>Game Paused</h2>
+                    <button onClick={handleResume}>Resume Game</button>
+                </div>
+            )}
             {gameState === 'ended' && renderEndGameMessage()}
+
+            {gameState === 'playing' && (
+                <button onClick={handlePause} className="pause-button">
+                    Pause Game
+                </button>
+            )}
         </div>
     );
 }
