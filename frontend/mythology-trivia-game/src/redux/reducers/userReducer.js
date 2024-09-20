@@ -9,7 +9,12 @@ const loadUserInfo = () => {
     try {
         const userInfo = localStorage.getItem('currentUser');
         if (userInfo) {
-            return JSON.parse(userInfo);
+            const parsedInfo = JSON.parse(userInfo);
+            if (new Date() > new Date(parsedInfo.expiresAt)) {
+                localStorage.removeItem('currentUser');
+                return null;
+            }
+            return parsedInfo;
         }
         return null;
     } catch (e) {
@@ -39,7 +44,8 @@ const userReducer = (state = initialState, action) => {
                 ...state,
                 currentUser: {
                     ...action.payload,
-                    username: action.payload.username || state.currentUser?.username
+                    username: action.payload.username || state.currentUser?.username,
+                    expiresAt: action.payload.expiresAt
                 },
                 loading: false,
                 error: null,

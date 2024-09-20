@@ -18,11 +18,13 @@ export const loginUser = (credentials) => async (dispatch) => {
         const data = await response.json();
 
         if (response.ok) {
+            const expiresAt = new Date(new Date().getTime() + 2 * 60 * 60 * 1000); // 2 hours
             dispatch({
                 type: USER_LOGIN_SUCCESS,
                 payload: {
                     access_token: data.access_token,
-                    username: credentials.username
+                    username: credentials.username,
+                    expiresAt: expiresAt.toISOString()
                 }
             });
         } else {
@@ -40,14 +42,18 @@ export const loginUser = (credentials) => async (dispatch) => {
     }
 };
 
-
 export const setCurrentUser = (userData) => (dispatch) => {
+    const expiresAt = new Date(new Date().getTime() + 2 * 60 * 60 * 1000); // 2 hours
+    const userDataWithExpiration = {
+        ...userData,
+        expiresAt: expiresAt.toISOString()
+    };
     dispatch({
         type: USER_LOGIN_SUCCESS,
-        payload: userData
+        payload: userDataWithExpiration
     });
 
-    localStorage.setItem('currentUser', JSON.stringify(userData));
+    localStorage.setItem('currentUser', JSON.stringify(userDataWithExpiration));
 };
 
 export const logoutUser = () => (dispatch) => {
