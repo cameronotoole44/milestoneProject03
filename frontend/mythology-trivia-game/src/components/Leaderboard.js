@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { logoutUser } from "../actions/userActions";
 
 const Leaderboard = () => {
     const [leaderboard, setLeaderboard] = useState([]);
     const [loading, setLoading] = useState(true);
     const currentUser = useSelector((state) => state.user.currentUser);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const fetchLeaderboard = async () => {
@@ -45,6 +47,7 @@ const Leaderboard = () => {
     };
 
     const handleLogout = () => {
+        dispatch(logoutUser());
         navigate('/login');
     };
 

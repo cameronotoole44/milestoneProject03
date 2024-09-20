@@ -75,15 +75,12 @@ Players' cumulative scores are tracked and displayed, with the top 10 players fe
 
 ## Technologies Used
 
-- **Frontend**: React, Redux, JavaScript, Tailwind CSS
-- **Backend**: Flask, Python
+- **Frontend**: React, Redux, JavaScript, Tailwind CSS(I used their @apply directive in a separate css file to make it easier to read the code for debugging purposes)
+- **Backend**: Flask and Python
 - **Database**: PostgreSQL
+- **Database Migrations**: Flask-Migrate
 - **State Management**: Redux
-- **ORM**: Flask-Migrate
-- **REST API**: Flask RESTful API
+- **ORM**: SQLAlchemy
+- **REST API**: Flask-RESTful API
 
 ---
-
-## License
-
-This project is licensed under the MIT License. For more details, please refer to the [LICENSE](LICENSE) file.
