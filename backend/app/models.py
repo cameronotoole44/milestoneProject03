@@ -67,10 +67,10 @@ class UserDailyChallenge(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     question_id = db.Column(db.Integer, db.ForeignKey('question.id'), nullable=False)
-    
     date_answered = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
-    correct = db.Column(db.Boolean, nullable=False)
-    
+    last_challenge_time = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False) 
+    correct = db.Column(db.Boolean, nullable=True)
+
     # relationships
     user = db.relationship('User', backref='daily_challenges')
     question = db.relationship('Question', backref='daily_attempts')
