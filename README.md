@@ -17,7 +17,6 @@ The inspiration for this project stems from my passion for mythology. I wanted t
 - [Leaderboard](#leaderboard)
 - [Coming Soon](#coming-soon)
 - [Technologies Used](#technologies-used)
-- [License](#license)
 
 ---
 
@@ -65,11 +64,12 @@ Players' cumulative scores are tracked and displayed, with the top 10 players fe
 
 - **Chinese Mythology Gameboard:** A new thematic expansion featuring questions related to Chinese mythology.
 - **Power-Ups:** Special abilities that provide an advantage during gameplay:
-  - **Thor's Fury**: Doubles points for the next 3 questions.
-  - **Athena's Insight**: Removes two incorrect answers, making it easier to choose the correct one.
-  - **Loki's Trick**: Allows you to swap the current question for a new one.
-  - **Chronos Pause**: Temporarily pauses the game timer.
+  - **Thor's Fury:** Doubles points for the next 3 questions.
+  - **Athena's Insight:** Removes two incorrect answers, making it easier to choose the correct one.
+  - **Loki's Trick:** Allows you to swap the current question for a new one.
+  - **Chronos Pause:** Temporarily pauses the game timer.
 - **Admin Panel:** A dedicated administrative interface for managing game data, player stats, and other controls.
+- **Question Updates:** Question pools will be continuously updated with new questions!
 
 ---
 
@@ -84,3 +84,7 @@ Players' cumulative scores are tracked and displayed, with the top 10 players fe
 - **REST API**: Flask-RESTful API
 
 ---
+
+### Database ERD
+
+![DatabaseERD](./frontend/mythology-trivia-game/src/assets/lore_master_erd.png)
