@@ -56,6 +56,11 @@ class User(db.Model):
     def __repr__(self):
         return f'<User {self.username}>'
 
+class DailyTheme(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.Date, unique=True, nullable=False)
+    theme = db.Column(db.String, nullable=False)
+
 
 class UserDailyChallenge(db.Model):
     __tablename__ = 'user_daily_challenges'
@@ -81,7 +86,6 @@ class PowerUp(db.Model):
 
     def __repr__(self):
         return f'<PowerUp {self.name}>'
-
 
 
 

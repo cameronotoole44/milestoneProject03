@@ -1,7 +1,7 @@
 import random
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.models import User, Question, UserDailyChallenge
+from app.models import User, Question, UserDailyChallenge, DailyTheme
 from datetime import datetime, timezone, timedelta
 from sqlalchemy import func
 from app import db
@@ -44,21 +44,30 @@ def get_leaderboard():
 @bp.route('/random-theme', methods=['GET'])
 @jwt_required()
 def get_random_theme():
-    try:
-        themes = db.session.query(Question.theme).distinct().all()
-        
-        if not themes:
-            return jsonify({"error": "No themes available"}), 404
-        
-        #  convert the tuples to list of strings
-        theme_list = [theme[0] for theme in themes]
-        
-        random_theme = random.choice(theme_list)
-        
-        return jsonify({"theme": random_theme}), 200
-    except Exception as e:
-        print(f"Error: {e}")
-        return jsonify({"error": "An error occurred"}), 500
+    today = datetime.now(timezone.utc).date()
+
+    # is the theme set for the day?
+    daily_theme = DailyTheme.query.filter_by(date=today).first()
+
+    if daily_theme:
+        return jsonify({"theme": daily_theme.theme}), 200
+    
+    # no? generate a new random theme
+    themes = db.session.query(Question.theme).distinct().all()
+
+    if not themes:
+        return jsonify({"error": "No themes available"}), 404
+
+    theme_list = [theme[0] for theme in themes]
+    random_theme = random.choice(theme_list)
+
+    # save the theme to database
+    new_daily_theme = DailyTheme(date=today, theme=random_theme)
+    db.session.add(new_daily_theme)
+    db.session.commit()
+
+    return jsonify({"theme": random_theme}), 200
+
 
 @bp.route('/daily-challenge', methods=['GET'])
 @jwt_required()
@@ -84,7 +93,7 @@ def get_daily_challenge():
             ]
         }), 200
     
-    # generate a new challenge
+    # generate a new challenge if theres none
     theme = request.args.get('theme')
     if not theme:
         return jsonify({"error": "Theme parameter is required"}), 400

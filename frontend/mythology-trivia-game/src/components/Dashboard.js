@@ -20,19 +20,14 @@ const Dashboard = () => {
 
     const token = currentUser?.access_token;
 
-
     useEffect(() => {
-        const handleLogoutCleanup = () => {
-            localStorage.removeItem('dailyChallengeData'); // clears local storage on logout
-        };
+        const today = new Date().toISOString().split('T')[0]; // current date in correct format (YYYY-MM-DD)
+        const storedChallenge = JSON.parse(localStorage.getItem('dailyChallenge'));
 
-        if (!currentUser) {
-            handleLogoutCleanup();
-        }
-    }, [currentUser]);
-
-    useEffect(() => {
-        if (token && currentUser) {
+        // check for stored daily challenge
+        if (storedChallenge && storedChallenge.date_answered === today) {
+            dispatch({ type: 'SET_DAILY_CHALLENGE', payload: storedChallenge });
+        } else if (token && currentUser) {
             console.log("Fetching fresh daily challenge for user:", currentUser.username);
             dispatch(fetchDailyChallenge());
         }
@@ -64,35 +59,26 @@ const Dashboard = () => {
 
     // logout
     const handleLogout = () => {
+        localStorage.removeItem('dailyChallenge'); //clears local storage on logout
         dispatch(logoutUser());
         navigate('/login');
     };
 
     // redirects
-    const handleProfile = () => {
-        navigate('/profile');
-    };
+    const handleProfile = () => navigate('/profile');
+    const handleHomeNavigation = () => navigate('/');
+    const handleGameboardNavigation = () => navigate('/gameboard');
+    const handleLeaderboardNavigation = () => navigate('/leaderboard');
 
-    const handleHomeNavigation = () => {
-        navigate('/');
-    };
-
-    const handleGameboardNavigation = () => {
-        navigate('/gameboard');
-    };
-
-    const handleLeaderboardNavigation = () => {
-        navigate('/leaderboard');
-    };
-
-    const handleAnswerChange = (event) => {
-        setSelectedAnswer(event.target.value);
-    };
+    const handleAnswerChange = (event) => setSelectedAnswer(event.target.value);
 
     // daily challenge answer submission
     const handleSubmitAnswer = () => {
         if (dailyChallenge && dailyChallenge.id) {
             dispatch(submitAnswer(dailyChallenge.id, selectedAnswer));
+            // make sure to store it in local storage
+            const updatedChallenge = { ...dailyChallenge, date_answered: new Date().toISOString().split('T')[0] };
+            localStorage.setItem('dailyChallenge', JSON.stringify(updatedChallenge));
         }
     };
 
@@ -166,7 +152,7 @@ const Dashboard = () => {
                 </div>
             </div>
         </div>
-    );
+    )
 };
 
 export default Dashboard;
