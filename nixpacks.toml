@@ -3,7 +3,9 @@ nixPkgs = ["postgresql", "python3", "python3Packages.pip"]
 
 [phases.install]
 path = "backend"
-cmds = ["pip install -r requirements.txt"]
+cmds = [
+    "pip install --no-cache-dir -r requirements.txt"
+]
 
 [phases.build]
 cmds = [
