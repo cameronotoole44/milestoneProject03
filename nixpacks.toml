@@ -1,24 +1,13 @@
-[
-phases.setup
-]
+[phases.setup]
 nixPkgs = ["postgresql"]
 
-[
-phases.install
-]
+[phases.install]
 path = "backend"
 cmds = ["pip install -r requirements.txt"]
 
-[
-phases.build
-]
-cmds = [
-  "cd ../frontend && npm install && npm run build",
-  "mv ../frontend/build ./static"
-]
+[phases.build]
+cmds = ["cd ../frontend && npm install && npm run build", "mv ../frontend/build ./static"]
 
-[
-start
-]
+[start]
 cmd = "gunicorn app:app"
 workdir = "backend"
