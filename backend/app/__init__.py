@@ -17,7 +17,8 @@ jwt = JWTManager()
 def create_app(config_class=Config):
     app = Flask(__name__)
     CORS(app, 
-     resources={r"/*": {"origins": "http://localhost:3000"}},
+         
+     resources={r"/*": {"origins":[ "http:/localhost:3000", "https://milestone-project03.vercel.app/"]}},
      supports_credentials=True,
      allow_headers=["Content-Type", "Authorization", "Accept", "Origin", "X-Requested-With"],
      expose_headers=["Content-Type", "Authorization"])
