@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["postgresql", "python3", "python3Packages.pip"]
+nixPkgs = ["python3", "python3-pip", "postgresql"]
 
 [phases.install]
 path = "backend"
