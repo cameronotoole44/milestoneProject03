@@ -14,8 +14,8 @@ nixPkgs = [
 
 [phases.build]
 cmds = [
-    "cd frontend && npm install && npm run build",
-    "mv frontend/build backend/static"
+    "cd frontend/mythology-trivia && npm install && npm run build",
+    "mv frontend/mythology-trivia/build backend/static"
 ]
 
 [start]
