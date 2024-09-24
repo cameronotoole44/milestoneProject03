@@ -2,24 +2,23 @@
 nixPkgs = [
     "postgresql",
     "python3",
-    "python3Packages.pip",
-    "python3Packages.virtualenv"
-]
-
-[phases.install]
-path = "backend"
-cmds = [
-    "python3 -m venv .venv",
-    ". .venv/bin/activate",
-    "pip install --no-cache-dir -r requirements.txt"
+    "python3Packages.flask",
+    "python3Packages.gunicorn",
+    "python3Packages.flask_sqlalchemy",  # Use underscore for package names
+    "python3Packages.psycopg2",
+    "python3Packages.flask_migrate",
+    "python3Packages.flask_cors",
+    "python3Packages.python_dotenv",
+    "nodejs",
+    "npm"
 ]
 
 [phases.build]
 cmds = [
-    "cd ../frontend && npm install && npm run build",
-    "mv ../frontend/build ../backend/static"
+    "cd frontend/mythology-trivia && npm install && npm run build",
+    "mv frontend/mythology-trivia/build backend/static"
 ]
 
 [start]
-cmd = ". .venv/bin/activate && gunicorn 'app:app' --bind=0.0.0.0:$PORT"
+cmd = "gunicorn 'app:app' --bind=0.0.0.0:$PORT"
 workdir = "backend"
