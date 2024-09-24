@@ -1,26 +1,25 @@
+[phases.setup]
 nixPkgs = [
-    "nodejs-20_x",
-    "npm",
+    "python310",
+    "nodejs",
     "postgresql",
-    "python3",
-    "python3Packages.flask",
-    "python3Packages.gunicorn",
-    "python3Packages.flask-sqlalchemy",
-    "python3Packages.psycopg2",
-    "python3Packages.flask-migrate",
-    "python3Packages.flask-cors",
-    "python3Packages.python-dotenv"
+    "python310Packages.flask",
+    "python310Packages.gunicorn",
+    "python310Packages.flask-sqlalchemy",
+    "python310Packages.psycopg2",
+    "python310Packages.flask-migrate",
+    "python310Packages.flask-cors",
+    "python310Packages.python-dotenv"
 ]
 
 [phases.build]
 cmds = [
-    "echo 'Starting build process...'",
-    "nix-env -iA nixpkgs.nodejs-20_x",
     "npm install --prefix frontend/mythology-trivia-game",
     "npm run build --prefix frontend/mythology-trivia-game",
-    "mv frontend/mythology-trivia-game/build backend/static"
+    "mkdir -p backend/static",
+    "mv frontend/mythology-trivia-game/build/* backend/static/"
 ]
 
 [start]
-cmd = "gunicorn 'app:app' --bind=0.0.0.0:$PORT"
+cmd = "gunicorn backend.app:app --bind=0.0.0.0:$PORT"
 workdir = "backend"
