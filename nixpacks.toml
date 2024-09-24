@@ -1,22 +1,20 @@
-[phases.setup]
 nixPkgs = [
+    "nodejs-20_x",
     "postgresql",
     "python3",
     "python3Packages.flask",
     "python3Packages.gunicorn",
-    "python3Packages.flask_sqlalchemy",  # Use underscore for package names
+    "python3Packages.flask-sqlalchemy",
     "python3Packages.psycopg2",
-    "python3Packages.flask_migrate",
-    "python3Packages.flask_cors",
-    "python3Packages.python_dotenv",
-    "nodejs",
-    "npm"
+    "python3Packages.flask-migrate",
+    "python3Packages.flask-cors",
+    "python3Packages.python-dotenv"
 ]
 
 [phases.build]
 cmds = [
-    "cd frontend/mythology-trivia && npm install && npm run build",
-    "mv frontend/mythology-trivia/build backend/static"
+    "cd frontend && npm install && npm run build",
+    "mv frontend/build backend/static"
 ]
 
 [start]
