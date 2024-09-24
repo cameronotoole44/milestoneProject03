@@ -5,7 +5,7 @@ export const activatePowerUp = (powerupName) => async (dispatch, getState) => {
     const token = getState().user.accessToken;
 
     try {
-        const response = await fetch('http://localhost:5000/powerups/activate', {
+        const response = await fetch('https://loremaster.up.railway.app/powerups/activate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
