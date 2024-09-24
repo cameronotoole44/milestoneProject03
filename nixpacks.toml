@@ -1,5 +1,5 @@
 nixPkgs = [
-    "nodejs-20_x",
+    "nodejs-20_x",  # Include Node.js
     "npm",
     "postgresql",
     "python3",
@@ -14,9 +14,8 @@ nixPkgs = [
 
 [phases.build]
 cmds = [
-    "echo 'Checking Node and npm versions...'",
-    "node -v",
-    "npm -v",
+    "echo 'Starting build process...'",
+    "nix-env -iA nixpkgs.nodejs-20_x",  # Explicitly install Node.js if needed
     "npm install --prefix frontend/mythology-trivia-game",
     "npm run build --prefix frontend/mythology-trivia-game",
     "mv frontend/mythology-trivia-game/build backend/static"
