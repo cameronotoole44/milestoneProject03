@@ -2,13 +2,17 @@
 nixPkgs = [
     "postgresql",
     "python3",
-    "python3Packages.pip"  # Include pip as a package
+    "python3Packages.pip",
+    "python3Packages.virtualenv"
 ]
 
 [phases.install]
 path = "backend"
 cmds = [
-    "python3 -m pip install --no-cache-dir -r requirements.txt"
+    "python3 -m venv /app/venv",
+    ". /app/venv/bin/activate",
+    "pip install --upgrade pip",
+    "pip install --no-cache-dir -r requirements.txt"
 ]
 
 [phases.build]
@@ -18,5 +22,5 @@ cmds = [
 ]
 
 [start]
-cmd = "gunicorn app:app"
+cmd = ". /app/venv/bin/activate && gunicorn app:app"
 workdir = "backend"
