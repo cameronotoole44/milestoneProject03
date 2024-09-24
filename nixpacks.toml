@@ -1,5 +1,5 @@
 nixPkgs = [
-    "nodejs-18_x",
+    "nodejs-20_x",
     "npm",
     "postgresql",
     "python3",
@@ -14,10 +14,14 @@ nixPkgs = [
 
 [phases.build]
 cmds = [
-    "cd frontend/mythology-trivia-game && npm install && npm run build",
+    "echo 'Checking Node and npm versions...'",
+    "node -v",
+    "npm -v",
+    "npm install --prefix frontend/mythology-trivia-game",
+    "npm run build --prefix frontend/mythology-trivia-game",
     "mv frontend/mythology-trivia-game/build backend/static"
 ]
 
 [start]
-cmd = "gunicorn 'app:app' --bind=0.0.0.0:$PORT" 
-workdir = "backend" 
+cmd = "gunicorn 'app:app' --bind=0.0.0.0:$PORT"
+workdir = "backend"
