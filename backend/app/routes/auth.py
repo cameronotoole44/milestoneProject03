@@ -58,9 +58,10 @@ def register():
 
 #     return jsonify({"msg": "User registered successfully"}), 201
 
-@bp.route('/login/', methods=['POST'])
+@bp.route('/login/', methods=['POST', 'OPTIONS'])
 def login():
     data = request.get_json()
+    print("Login attempt:", data)  # Log the incoming request data
     username = data.get('username')
     password = data.get('password')
 
@@ -71,6 +72,7 @@ def login():
         return jsonify(access_token=access_token), 200
     else:
         return jsonify({"msg": "Invalid username or password"}), 401
+
 
 @bp.route('/logout/', methods=['POST'])
 @jwt_required()
