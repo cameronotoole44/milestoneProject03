@@ -1,6 +1,6 @@
 import os
 from flask import Flask, send_from_directory
-from backend import create_app  # Import your create_app function
+from app import create_app  # Import your create_app function
 
 application = create_app()  # Initialize your Flask app
 
