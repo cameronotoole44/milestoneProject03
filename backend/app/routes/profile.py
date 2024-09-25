@@ -5,7 +5,7 @@ from ..models import User
 
 bp = Blueprint('profile', __name__)
 
-@bp.route('/profile', methods=['GET'])
+@bp.route('/profile/', methods=['GET'])
 @jwt_required()
 def get_profile():
     current_user_id = get_jwt_identity()

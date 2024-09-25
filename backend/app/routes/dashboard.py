@@ -9,7 +9,7 @@ from app import db
 
 bp = Blueprint('dashboard', __name__)
 
-@bp.route('/dashboard', methods=['GET'])
+@bp.route('/dashboard/', methods=['GET'])
 @jwt_required()
 def dashboard():
     current_user = get_jwt_identity()
@@ -27,7 +27,7 @@ def dashboard():
 
     return jsonify(response), 200
 
-@bp.route('/leaderboard', methods=['GET'])
+@bp.route('/leaderboard/', methods=['GET'])
 @jwt_required()
 def get_leaderboard():
     try:
@@ -41,7 +41,7 @@ def get_leaderboard():
         print(f"Error: {e}")
         return jsonify({"error": "An error occurred"}), 500
 
-@bp.route('/random-theme', methods=['GET'])
+@bp.route('/random-theme/', methods=['GET'])
 @jwt_required()
 def get_random_theme():
     today = datetime.now(timezone.utc).date()
@@ -68,7 +68,7 @@ def get_random_theme():
 
     return jsonify({"theme": random_theme}), 200
 
-@bp.route('/daily-challenge', methods=['GET'])
+@bp.route('/daily-challenge/', methods=['GET'])
 @jwt_required()
 def get_daily_challenge():
     user_id = get_jwt_identity()
@@ -133,7 +133,7 @@ def get_daily_challenge():
     }), 200
 
 
-@bp.route('/submit-daily-challenge', methods=['POST'])
+@bp.route('/submit-daily-challenge/', methods=['POST'])
 @jwt_required()
 def submit_daily_challenge():
     user_id = get_jwt_identity()

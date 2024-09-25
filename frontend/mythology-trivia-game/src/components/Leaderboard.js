@@ -16,7 +16,7 @@ const Leaderboard = () => {
 
             try {
                 const token = currentUser.access_token;
-                const response = await fetch('https://loremaster.up.railway.app/leaderboard', {
+                const response = await fetch('https://loremaster.up.railway.app/leaderboard/', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

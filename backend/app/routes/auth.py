@@ -5,12 +5,7 @@ from app import db, jwt
 
 bp = Blueprint('auth', __name__)
 
-@bp.route('/', methods=['GET'])
-def home():
-    return jsonify({"message": "Welcome to the API!"}), 200
-
-
-@bp.route('/register', methods=['POST'])
+@bp.route('/register/', methods=['POST'])
 def register():
     data = request.get_json()
     username = data.get('username')
@@ -63,7 +58,7 @@ def register():
 
 #     return jsonify({"msg": "User registered successfully"}), 201
 
-@bp.route('/login', methods=['POST'])
+@bp.route('/login/', methods=['POST'])
 def login():
     data = request.get_json()
     username = data.get('username')
@@ -77,13 +72,13 @@ def login():
     else:
         return jsonify({"msg": "Invalid username or password"}), 401
 
-@bp.route('/logout', methods=['POST'])
+@bp.route('/logout/', methods=['POST'])
 @jwt_required()
 def logout():
     jti = get_jwt()["jti"]
     return jsonify({"msg": "Successfully logged out"}), 200
 
-@bp.route('/profile', methods=['GET'])
+@bp.route('/profile/', methods=['GET'])
 @jwt_required()
 def get_profile():
     current_user_id = get_jwt_identity()
@@ -99,7 +94,7 @@ def get_profile():
         "highest_score": user.highest_score
     }), 200
 
-@bp.route('/update_stats', methods=['POST'])
+@bp.route('/update_stats/', methods=['POST'])
 @jwt_required()
 def update_stats():
 

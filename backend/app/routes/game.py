@@ -16,7 +16,7 @@ def shuffle_options(question): # use the helper function to shuffle
     random.shuffle(options)
     return options
 
-@bp.route('/questions', methods=['GET'])
+@bp.route('/questions/', methods=['GET'])
 @jwt_required()
 def get_questions():
     try:
