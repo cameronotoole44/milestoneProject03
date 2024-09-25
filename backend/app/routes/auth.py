@@ -61,7 +61,6 @@ def register():
 @bp.route('/login/', methods=['POST', 'OPTIONS'])
 def login():
     data = request.get_json()
-    print("Login attempt:", data)  # Log the incoming request data
     username = data.get('username')
     password = data.get('password')
 
