@@ -1,17 +1,14 @@
 import os
 from flask import Flask, send_from_directory
+from backend import create_app  # Import your create_app function
 
+application = create_app()  # Initialize your Flask app
 
-application = Flask(__name__, static_folder='static')
-
-
+# Serve frontend files
 @application.route('/', defaults={'path': ''})
 @application.route('/<path:path>')
 def serve(path):
-    if path != "" and os.path.exists(os.path.join(application.static_folder, path)):
-        return send_from_directory(application.static_folder, path)
-    else:
-        return send_from_directory(application.static_folder, 'index.html')
+    return send_from_directory('build', path) if path else send_from_directory('build', 'index.html')
 
 if __name__ == "__main__":
     application.run(host='0.0.0.0', port=int(os.getenv("PORT", 8080)))
