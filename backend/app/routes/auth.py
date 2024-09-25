@@ -5,6 +5,11 @@ from app import db, jwt
 
 bp = Blueprint('auth', __name__)
 
+@bp.route('/', methods=['GET'])
+def home():
+    return jsonify({"message": "Welcome to the API!"}), 200
+
+
 @bp.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
