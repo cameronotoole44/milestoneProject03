@@ -28,7 +28,7 @@ export const fetchDailyChallenge = () => async (dispatch, getState) => {
     dispatch({ type: FETCH_DAILY_CHALLENGE_REQUEST });
 
     try {
-        const themeResponse = await fetch('https://loremaster.up.railway.app/random-theme/', {
+        const themeResponse = await fetch('https://loremasterbe.up.railway.app/random-theme/', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` },
         });
@@ -37,7 +37,7 @@ export const fetchDailyChallenge = () => async (dispatch, getState) => {
             const themeData = await themeResponse.json();
             const theme = themeData.theme;
 
-            const challengeResponse = await fetch(`https://loremaster.up.railway.app/daily-challenge?theme=${theme}/`, {
+            const challengeResponse = await fetch(`https://loremasterbe.up.railway.app/daily-challenge?theme=${theme}/`, {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${token}` },
             });
@@ -74,7 +74,7 @@ export const submitAnswer = (questionId, selectedAnswer) => async (dispatch, get
     dispatch({ type: SUBMIT_DAILY_CHALLENGE_REQUEST });
 
     try {
-        const response = await fetch('https://loremaster.up.railway.app/submit-daily-challenge/', {
+        const response = await fetch('https://loremasterbe.up.railway.app/submit-daily-challenge/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -120,7 +120,7 @@ export const fetchQuestions = (theme) => async (dispatch) => {
     }
 
     try {
-        const response = await fetch(`https://loremaster.up.railway.app/questions?theme=${theme}/`, {
+        const response = await fetch(`https://loremasterbe.up.railway.app/questions?theme=${theme}/`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await response.json();
@@ -138,7 +138,7 @@ export const updatePlayerStats = (score) => async (dispatch) => {
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         const token = currentUser?.access_token;
         // console.log('Sending score to server:', score); 
-        const response = await fetch('https://loremaster.up.railway.app/auth/update_stats/', {
+        const response = await fetch('https://loremasterbe.up.railway.app/auth/update_stats/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -177,7 +177,7 @@ export const fetchUserPowerUps = () => async (dispatch, getState) => {
     const token = getState().user.currentUser.access_token;
 
     try {
-        const response = await fetch('https://loremaster.up.railway.app/profile/powerups/', {
+        const response = await fetch('https://loremasterbe.up.railway.app/profile/powerups/', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` },
         });

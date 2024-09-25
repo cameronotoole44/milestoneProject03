@@ -19,8 +19,8 @@ def create_app(config_class=Config):
     CORS(application,
          resources={r"/*": {"origins": [
              "http://localhost:3000",
-             "https://milestone-project03.vercel.app"
-         ]}},
+             "https://milestone-project03.vercel.app",
+             "https://loremasterfe.up.railway.app/"         ]}},
          supports_credentials=True,
          allow_headers=["Content-Type", "Authorization", "Accept", "Origin", "X-Requested-With"],
          expose_headers=["Content-Type", "Authorization"]

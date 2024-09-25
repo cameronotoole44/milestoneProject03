@@ -29,7 +29,7 @@ const Profile = () => {
                         return;
                     }
 
-                    const response = await fetch("https://loremaster.up.railway.app/profile/", {
+                    const response = await fetch("https://loremasterbe.up.railway.app/profile/", {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
