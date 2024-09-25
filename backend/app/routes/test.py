@@ -1,10 +1,7 @@
-from flask import Flask, jsonify
+from flask import Blueprint, jsonify
 
-app = Flask(__name__)
+bp = Blueprint('test', __name__)
 
-@app.route('/', methods=['GET'])
+@bp.route('/', methods=['GET'])
 def test_route():
     return jsonify({"message": "Backend is working!"}), 200
-
-if __name__ == "__main__":
-    app.run(debug=True)

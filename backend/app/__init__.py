@@ -34,10 +34,12 @@ def create_app(config_class=Config):
     migrate.init_app(application, db)
     jwt.init_app(application)
 
-    from .routes import auth, dashboard, profile, game
+    from .routes import auth, dashboard, profile, game, test
     application.register_blueprint(auth.bp, url_prefix='/auth')
     application.register_blueprint(dashboard.bp)
     application.register_blueprint(profile.bp)
     application.register_blueprint(game.bp)
+    application.register_blueprint(test.bp)
+    
 
     return application
