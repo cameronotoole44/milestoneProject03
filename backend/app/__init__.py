@@ -20,7 +20,7 @@ def create_app(config_class=Config):
          resources={r"/*": {"origins": [
              "http://localhost:3000",
              "https://milestone-project03.vercel.app",
-             "https://loremasterfe.up.railway.app/"         ]}},
+             "https://loremasterfe.up.railway.app"         ]}},
          supports_credentials=True,
          methods=["GET", "POST", "OPTIONS"],
          allow_headers=["Content-Type", "Authorization", "Accept", "Origin", "X-Requested-With"],
