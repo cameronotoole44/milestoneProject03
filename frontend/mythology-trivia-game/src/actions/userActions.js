@@ -11,7 +11,7 @@ export const loginUser = (credentials) => async (dispatch) => {
 
         const response = await fetch('https://loremasterbe.up.railway.app/auth/login/', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
             body: JSON.stringify(credentials),
         });
 
