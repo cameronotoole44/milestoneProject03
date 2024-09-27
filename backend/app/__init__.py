@@ -17,14 +17,16 @@ jwt = JWTManager()
 def create_app(config_class=Config):
     application = Flask(__name__)
     CORS(application,
-         resources={r"/*": {"origins": [
-             "http://localhost:3000",
-             "https://milestone-project03.vercel.app",
-             "https://loremasterfe.up.railway.app"         ]}},
-         supports_credentials=True,
-         allow_headers=["Content-Type", "Authorization", "Accept", "Origin", "X-Requested-With"],
-         expose_headers=["Content-Type", "Authorization"]
-    )
+     resources={r"/*": {"origins": [
+         "http://localhost:3000",
+         "https://milestone-project03.vercel.app",
+         "https://loremasterfe.up.railway.app"
+     ],
+     "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+     "allow_headers": ["Content-Type", "Authorization", "Accept", "Origin", "X-Requested-With"],
+     "expose_headers": ["Content-Type", "Authorization"]
+     }},
+     supports_credentials=True)
 
     application.config.from_object(config_class)
     application.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=2)
